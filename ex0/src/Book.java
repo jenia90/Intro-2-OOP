@@ -6,8 +6,6 @@ public class Book{
     /**
      * Default borrowerId for when the book isn't borrowed
      */
-    private static final int RETURNED_BORROWER_ID = -1;
-
     private final String bookTitle;
     private final String bookAuthor;
     private final int bookYearOfPublication;
@@ -26,7 +24,7 @@ public class Book{
      * @param bookDramaticValue The dramatic value of the book.
      * @param bookEducationalValue The educational value of the book.
      */
-    Book(String bookTitle, String bookAuthor, int bookYearOfPublication,
+    public Book(String bookTitle, String bookAuthor, int bookYearOfPublication,
          int bookComicValue, int bookDramaticValue, int bookEducationalValue){
 
         this.bookTitle = bookTitle;
@@ -35,6 +33,7 @@ public class Book{
         this.bookComicValue = bookComicValue;
         this.bookDramaticValue = bookDramaticValue;
         this.bookEducationalValue = bookEducationalValue;
+        borrowerId = -1;
     }
 
     /**
@@ -42,7 +41,7 @@ public class Book{
      * @return the id of the current borrower of this book
      */
     public int getCurrentBorrowerId() {
-        return this.borrowerId;
+        return borrowerId;
     }
 
     /**
@@ -50,14 +49,38 @@ public class Book{
      * @return the literary value of this book, which is defined as the sum of its comic value, its dramatic value and its educational value.
      */
     public int getLiteraryValue(){
-        return this.bookComicValue + this.bookEducationalValue + this.bookDramaticValue;
+        return bookComicValue + bookEducationalValue + bookDramaticValue;
+    }
+
+    /**
+     * Returns the book's comic value.
+     * @return int of book's comic value.
+     */
+    public int getBookComicValue(){
+        return bookComicValue;
+    }
+
+    /**
+     * Returns the book's dramatic value.
+     * @return int of book's dramatic value.
+     */
+    public int getBookDramaticValue(){
+        return bookDramaticValue;
+    }
+
+    /**
+     * Returns the book's educational value.
+     * @return int of book's educational value.
+     */
+    public int getBookEducationalValue(){
+        return bookEducationalValue;
     }
 
     /**
      * Marks this book as returned.
      */
     public void returnBook(){
-        this.borrowerId = RETURNED_BORROWER_ID;
+        borrowerId = -1;
     }
 
     /**
@@ -77,6 +100,6 @@ public class Book{
      * @return the String representation of this book.
      */
     public String stringRepresentation(){
-        return String.format("[%s,%s,%d,%d]", this.bookTitle, this.bookAuthor, this.bookYearOfPublication, getLiteraryValue());
+        return String.format("[%s,%s,%d,%d]", bookTitle, bookAuthor, bookYearOfPublication, getLiteraryValue());
     }
 }

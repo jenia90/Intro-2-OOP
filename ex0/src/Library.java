@@ -1,4 +1,6 @@
-import java.util.List;
+import jdk.nashorn.internal.objects.annotations.Constructor;
+
+import java.util.ArrayList;
 
 /**
  * This class represents a library, which holds a collection of books. Patrons can register at the library to be able
@@ -9,8 +11,8 @@ public class Library {
     private final int maxBookCapacity;
     private final int maxBorrowedBooks;
     private final int maxPatronCapacity;
-    private List<Book> libraryBooks;
-    private List<Patron> libraryPatrons;
+    private ArrayList<Book> libraryBooks;
+    private ArrayList<Patron> libraryPatrons;
 
     /**
      * Creates new library with the given characteristics.
@@ -22,6 +24,8 @@ public class Library {
         this.maxBookCapacity = maxBookCapacity;
         this.maxBorrowedBooks = maxBorrowedBooks;
         this.maxPatronCapacity = maxPatronCapacity;
+        libraryBooks = new ArrayList<Book>();
+        libraryPatrons = new ArrayList<Patron>();
     }
 
     /**
@@ -30,12 +34,16 @@ public class Library {
      * @return a non-negative id number for the book if there was a spot and the book was successfully added,
      * or if the book was already in the library; a negative number otherwise.
      */
-    public int addBookToLibrary(Book book){
-        if (libraryBooks.contains(book) || libraryBooks.size() >= maxBookCapacity)
+    public int addBookToLibrary(Book book) {
+        if (libraryBooks.contains(book))
+            return libraryBooks.indexOf(book);
+
+        else if (libraryBooks.size() >= maxBookCapacity)
             return -1;
+
         else {
             libraryBooks.add(book);
-            return libraryBooks.size();
+            return libraryBooks.indexOf(book);
         }
     }
 
@@ -45,7 +53,7 @@ public class Library {
      * @return true if the given number is an id of some book in the library, false otherwise.
      */
     public boolean isBookIdValid(int bookId){
-        return bookId <= libraryBooks.size();
+        return bookId <= libraryBooks.size() - 1 && (bookId >= 0);
     }
 
     /**
@@ -62,8 +70,8 @@ public class Library {
      * @param bookId The id number of the book to check.
      * @return true if the book with the given id is available, false otherwise.
      */
-    public boolean isBookAvailable(int bookId){
-        return libraryBooks.get(bookId).getCurrentBorrowerId() < 0;
+    public boolean isBookAvailable(int bookId) {
+        return libraryBooks.get(bookId).getCurrentBorrowerId() == -1;
     }
 
     /**
@@ -71,13 +79,13 @@ public class Library {
      * @param patron The patron to register to this library.
      * @return a non-negative id number for the patron if there was a spot and the patron was successfully registered, a negative number otherwise.
      */
-    public int registrPatronToLibrary(Patron patron){
-        if(libraryPatrons.size() <= maxPatronCapacity){
+    public int registerPatronToLibrary(Patron patron){
+        if(libraryPatrons.size() < maxPatronCapacity){
             libraryPatrons.add(patron);
-            return libraryPatrons.size();
+            return libraryPatrons.indexOf(patron);
         }
-        else
-            return -1;
+
+        else return libraryPatrons.contains(patron) ? libraryPatrons.indexOf(patron) : -1;
     }
 
     /**
@@ -86,7 +94,7 @@ public class Library {
      * @return true if the given number is an id of a patron in the library, false otherwise.
      */
     public boolean isPatronIdValid(int patronId){
-        return patronId <= libraryPatrons.size();
+        return patronId <= libraryPatrons.size() - 1 && patronId >= 0;
     }
 
     /**
@@ -111,9 +119,9 @@ public class Library {
 
         if(isBookAvailable(bookId) && patron.getNumberOfBorrowedBooks() < maxBorrowedBooks && patron.willEnjoyBook(book)) {
             book.setBorrowerId(patronId);
+            patron.increaseNumberOfBorrowedBooks();
             return true;
-        }
-        else
+        } else
             return false;
     }
 
@@ -122,7 +130,10 @@ public class Library {
      * @param bookId The id number of the book to return.
      */
     public void returnBook(int bookId){
-        libraryBooks.get(bookId).returnBook();
+        Book book = libraryBooks.get(bookId);
+
+        libraryPatrons.get(book.getCurrentBorrowerId()).decreaseNumberOfBorrowedBooks();
+        book.returnBook();
     }
 
     public Book suggestBookToPatron(int patronId){
