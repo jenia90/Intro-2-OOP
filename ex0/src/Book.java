@@ -1,5 +1,5 @@
 /**
- * Represents a book
+ * This class represents a book, which has a title, author, year of publication and different literary aspects
  * @author jenia90
  */
 public class Book{
@@ -18,7 +18,7 @@ public class Book{
 
     /**
      * Constructor.
-     * Creates a new book with the given characteristics.
+     * Creates a new book with the given characteristic.
      * @param bookTitle The title of the book.
      * @param bookAuthor The name of the author of the book.
      * @param bookYearOfPublication The year the book was published.
@@ -47,7 +47,7 @@ public class Book{
 
     /**
      * Calculates the literary value
-     * @return the literary value of tis book, which is defined as the sum of its comic, dramatic and educational values.
+     * @return the literary value of this book, which is defined as the sum of its comic value, its dramatic value and its educational value.
      */
     public int getLiteraryValue(){
         return this.bookComicValue + this.bookEducationalValue + this.bookDramaticValue;
@@ -61,7 +61,7 @@ public class Book{
     }
 
     /**
-     * Sets the borrower ID
+     * Sets the given id as the id of the current borrower of this book, -1 if no patron is currently borrowing it.
      * @param borrowerId borrower's ID number
      */
     public void setBorrowerId(int borrowerId){
