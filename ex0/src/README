@@ -1,0 +1,32 @@
+jenia90
+
+
+
+
+=============================
+=      File description     =
+=============================
+Book.java - This class represents a book, which has a title, author, year of publication and different literary aspects
+Library.java - This class represents a library, which holds a collection of books.
+               Patrons can register at the library to be able to check out books, if a copy of the requested book is available.
+Patron.java - This class represents a library patron that has a name and assigns values to different literary aspects of books.
+
+
+
+=============================
+=          Design           =
+=============================
+All implementations were according to the exercise description, JavaDocs and APIs
+
+
+
+=============================
+=  Implementation details   =
+=============================
+I implemented the books and patrons lists as generic lists of corresponding types. This made the lookup, addition and other
+functions easier to implement.
+
+
+=============================
+=    Answers to questions   =
+=============================
