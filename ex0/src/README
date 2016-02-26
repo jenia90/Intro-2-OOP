@@ -23,8 +23,7 @@ All implementations were according to the exercise description, JavaDocs and API
 =============================
 =  Implementation details   =
 =============================
-I implemented the books and patrons lists as generic lists of corresponding types. This made the lookup, addition and other
-functions easier to implement.
+
 
 
 =============================

@@ -6,6 +6,7 @@ public class Book{
     /**
      * Default borrowerId for when the book isn't borrowed
      */
+    private static final int DEFAULT_ID = -1;
     private final String bookTitle;
     private final String bookAuthor;
     private final int bookYearOfPublication;
@@ -33,7 +34,7 @@ public class Book{
         this.bookComicValue = bookComicValue;
         this.bookDramaticValue = bookDramaticValue;
         this.bookEducationalValue = bookEducationalValue;
-        borrowerId = -1;
+        borrowerId = DEFAULT_ID;
     }
 
     /**
@@ -80,7 +81,7 @@ public class Book{
      * Marks this book as returned.
      */
     public void returnBook(){
-        borrowerId = -1;
+        borrowerId = DEFAULT_ID;
     }
 
     /**
