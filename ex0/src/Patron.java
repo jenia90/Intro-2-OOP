@@ -2,14 +2,14 @@
  * This class represents a library patron that has a name and assigns values to different literary aspects of books.
  * @author jenia90
  */
-public class Patron {
-    private final String patronFirstName;
-    private final String patronLastName;
-    private final int comicTendency;
-    private final int dramaticTendency;
-    private final int educationalTendency;
-    private final int patronEnjoymentThreshold;
-    private int numberOfBorrowedBooks;
+class Patron {
+    final String firstName;
+    final String lastName;
+    final int mComicTendency;
+    final int mDramaticTendency;
+    final int mEeducationalTendency;
+    final int mPatronEnjoymentThreshold;
+    int numberOfBorrowedBooks;
 
     /**
      * Constructor
@@ -21,15 +21,15 @@ public class Patron {
      * @param educationalTendency The weight the patron assigns to the educational aspects of books.
      * @param patronEnjoymentThreshold The minimal literary value a book must have for this patron to enjoy it.
      */
-    public Patron(String patronFirstName, String patronLastName, int comicTendency, int dramaticTendency,
+    Patron(String patronFirstName, String patronLastName, int comicTendency, int dramaticTendency,
                   int educationalTendency, int patronEnjoymentThreshold) {
-        this.patronFirstName = patronFirstName;
-        this.patronLastName = patronLastName;
-        this.comicTendency = comicTendency;
-        this.dramaticTendency = dramaticTendency;
-        this.educationalTendency = educationalTendency;
-        this.patronEnjoymentThreshold = patronEnjoymentThreshold;
-        this.numberOfBorrowedBooks = 0;
+        firstName = patronFirstName;
+        lastName = patronLastName;
+        mComicTendency = comicTendency;
+        mDramaticTendency = dramaticTendency;
+        mEeducationalTendency = educationalTendency;
+        mPatronEnjoymentThreshold = patronEnjoymentThreshold;
+        numberOfBorrowedBooks = 0;
     }
 
     /**
@@ -38,18 +38,19 @@ public class Patron {
      * this method will return the String "Ricky Bobby".
      * @return the String representation of this patron
      */
-    public String stringRepresentation(){
-        return String.format("%s %s", patronFirstName, patronLastName);
+    String stringRepresentation(){
+        return String.format("%s %s", firstName, lastName);
     }
 
     /**
      * Returns the literary value this patron assigns to the given book.
      * @param book The book to asses.
-     * @return the literarry value this patron assigns to the given book.
+     * @return the literary value this patron assigns to the given book.
      */
-    public int getBookScore(Book book){
-        return comicTendency * book.getBookComicValue() + dramaticTendency * book.getBookDramaticValue() +
-                educationalTendency * book.getBookEducationalValue();
+    int getBookScore(Book book){
+        return mComicTendency * book.getBookComicValue() +
+                mDramaticTendency * book.getBookDramaticValue() +
+                mEeducationalTendency * book.getBookEducationalValue();
     }
 
     /**
@@ -57,29 +58,29 @@ public class Patron {
      * @param book The book to asses.
      * @return true if this patron will enjoy the given book, false otherwise.
      */
-    public boolean willEnjoyBook(Book book){
-        return getBookScore(book) >= patronEnjoymentThreshold;
+    boolean willEnjoyBook(Book book){
+        return getBookScore(book) >= mPatronEnjoymentThreshold;
     }
 
     /**
      * Returns the number of books this patron currently borrowing
      * @return the int number of books this patron currently borrowing
      */
-    public int getNumberOfBorrowedBooks(){
+    int getNumberOfBorrowedBooks(){
         return numberOfBorrowedBooks;
     }
 
     /**
      * Increases the number of borrowed books count.
      */
-    public void increaseNumberOfBorrowedBooks(){
+    void increaseNumberOfBorrowedBooks(){
         numberOfBorrowedBooks++;
     }
 
     /**
      * Decreases the number of borrowed books count.
      */
-    public void decreaseNumberOfBorrowedBooks(){
+    void decreaseNumberOfBorrowedBooks(){
         numberOfBorrowedBooks--;
     }
 }
