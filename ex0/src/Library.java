@@ -1,5 +1,3 @@
-import java.util.ArrayList;
-
 /**
  * This class represents a library, which holds a collection of books. Patrons can register at the library to be able
  * to check out books, if a copy of the requested book is available.
@@ -26,8 +24,6 @@ public class Library {
         this.maxBookCapacity = maxBookCapacity;
         this.maxBorrowedBooks = maxBorrowedBooks;
         this.maxPatronCapacity = maxPatronCapacity;
-        //libraryBooks = new ArrayList<Book>();
-        //libraryPatrons = new ArrayList<Patron>();
         books = new Book[maxBookCapacity];
         patrons = new Patron[maxPatronCapacity];
         booksCount = 0;
@@ -46,7 +42,7 @@ public class Library {
         if(isBookIdValid(bookId))
             return bookId;
 
-        else if((booksCount + 1) <= maxBookCapacity){
+        else if(booksCount < maxBookCapacity){
             books[booksCount] = book;
             return booksCount++;
         } else
@@ -59,7 +55,7 @@ public class Library {
      * @return true if the given number is an id of some book in the library, false otherwise.
      */
     public boolean isBookIdValid(int bookId) {
-        if (bookId >= 0 && bookId <= maxBookCapacity)
+        if (bookId >= 0 && bookId < booksCount)
             return books[bookId] != null;
         return false;
     }
@@ -83,7 +79,9 @@ public class Library {
      * @return true if the book with the given id is available, false otherwise.
      */
     public boolean isBookAvailable(int bookId) {
-        return books[bookId].getCurrentBorrowerId() == DEFAULT_ID;
+        if(isBookIdValid(bookId))
+            return books[bookId].getCurrentBorrowerId() == DEFAULT_ID;
+        return false;
     }
 
     /**
@@ -105,7 +103,9 @@ public class Library {
      * @return true if the given number is an id of a patron in the library, false otherwise.
      */
     public boolean isPatronIdValid(int patronId){
-        return patronId <= patronsCount && patronId >= 0;
+        if (patronId >= 0 && patronId < patronsCount)
+            return patrons[patronId] != null;
+        return false;
     }
 
     /**
@@ -114,7 +114,7 @@ public class Library {
      * @return a non-negative id number of the given patron if he is registered to this library, -1 otherwise.
      */
     public int getPatronId(Patron patron){
-        for (int p = 0; p < patronsCount; p++) {
+        for (int p = 0; p < maxPatronCapacity; p++) {
             if(patrons[p] == patron)
                 return p;
         }
@@ -130,15 +130,19 @@ public class Library {
      * @return true if the book was borrowed successfully, false otherwise.
      */
     public boolean borrowBook(int bookId, int patronId){
+        if (!isBookIdValid(bookId) || !isPatronIdValid(patronId))
+            return false;
+
         Book book = books[bookId];
         Patron patron = patrons[patronId];
 
-        if(isBookAvailable(bookId) && patron.getNumberOfBorrowedBooks() < maxBorrowedBooks && patron.willEnjoyBook(book)) {
+        if(patron.getNumberOfBorrowedBooks() < maxBorrowedBooks && patron.willEnjoyBook(book) && isBookAvailable(bookId)) {
             book.setBorrowerId(patronId);
             patron.increaseNumberOfBorrowedBooks();
             return true;
-        } else
-            return false;
+        }
+
+        return false;
     }
 
     /**
@@ -146,6 +150,9 @@ public class Library {
      * @param bookId The id number of the book to return.
      */
     public void returnBook(int bookId){
+        if(!isBookIdValid(bookId))
+            return;
+
         Book book = books[bookId];
 
         patrons[book.getCurrentBorrowerId()].decreaseNumberOfBorrowedBooks();
@@ -153,6 +160,9 @@ public class Library {
     }
 
     public Book suggestBookToPatron(int patronId){
+        if(!isPatronIdValid(patronId))
+            return null;
+
         int threshold = 0;
         Book suggestedBook = null;
         Patron patron = patrons[patronId];
