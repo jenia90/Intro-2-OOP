@@ -43,6 +43,7 @@ class Library {
             return bookId;
 
         else if(booksCount < maxBookAmount){
+            book.returnBook();
             books[booksCount] = book;
             return booksCount++;
         } else
