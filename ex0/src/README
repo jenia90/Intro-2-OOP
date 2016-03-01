@@ -23,7 +23,8 @@ All implementations were done according to the exercise description, JavaDocs an
 =============================
 =  Implementation details   =
 =============================
-
+I used the index of items in books and patrons arrays as ids for the objects. This will guarantee unique id for each item
+assigned to the arrays.
 
 
 =============================
