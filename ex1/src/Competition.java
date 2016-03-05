@@ -9,7 +9,7 @@ import java.util.StringJoiner;
 public class Competition {
 	private static Player mPlayer1;
     private static Player mPlayer2;
-    private static  boolean mDisplayMessage;
+    private static  boolean mDisplayMessage = true;
     private static int p1Wins = 0;
     private static int p2Wins = 0;
 
@@ -56,7 +56,7 @@ public class Competition {
                     }
                 } while(true);
 
-                printMessage(String.format("Player %d made the move: %s", currentPlayer.getPlayerId(), currentMove.toString()));
+                printMessage(String.format("Player %d made the move: %s", currentPlayer.getPlayerId(), currentMove));
 
                 if(currentPlayer.equals(mPlayer1))
                     currentPlayer = mPlayer2;
@@ -64,15 +64,19 @@ public class Competition {
                     currentPlayer = mPlayer1;
             }
 
-            System.out.println(String.format("Player %d won!", currentPlayer.getPlayerId()));
             switch (currentPlayer.getPlayerId()){
                 case 1:
-                    p1Wins++;
+                    p2Wins++;
+                    currentPlayer = mPlayer2;
                     break;
                 case 2:
-                    p2Wins++;
+                    p1Wins++;
+                    currentPlayer = mPlayer1;
                     break;
             }
+
+            System.out.println(String.format("Player %d won!", currentPlayer.getPlayerId()));
+
 
 
         }

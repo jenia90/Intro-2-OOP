@@ -123,8 +123,11 @@ public class Player {
 	 * Produces a random move.
 	 */
 	private Move produceRandomMove(Board board){
-		return null;
-	}
+        Random randomMoveGen = new Random();
+
+        int row = randomMoveGen.nextInt(board.getNumberOfRows());
+        //randomMoveGen
+    }
 	
 	/*
 	 * Produce some intelligent strategy to produce a move
@@ -139,8 +142,36 @@ public class Player {
 	 */
 	private Move produceHumanMove(Board board){
 		/* You need to implement this method */
-		return null;
-	}
+        do {
+            System.out.println("Press 1 to display the board. Press 2 to make a move.");
+            int inRow;
+            int leftBound;
+            int rightBound;
+            int usrInput = scanner.nextInt();
+
+            switch (usrInput){
+                case 1:
+                    System.out.println(board);
+                    break;
+                case 2:
+                    System.out.println("Enter the row number: ");
+                    inRow = scanner.nextInt();
+
+                    System.out.println("Enter the index of the leftmost stick: ");
+                    leftBound = scanner.nextInt();
+
+                    System.out.println("Enter the index of the rightmost stick: ");
+                    rightBound = scanner.nextInt();
+
+                    return new Move(inRow, leftBound, rightBound);
+
+                default:
+                    System.out.println("Unsupported command");
+                    break;
+            }
+        } while(true);
+
+    }
 	
 	/*
 	 * Uses a winning heuristic for the Nim game to produce a move.
