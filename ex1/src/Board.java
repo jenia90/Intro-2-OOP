@@ -1,4 +1,4 @@
-import solution.Move;
+//import solution.Move;
 
 /**
  * The Board class represents a board of the Nim game. The board can be of a variable size. In this implementation 

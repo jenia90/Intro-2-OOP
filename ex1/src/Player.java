@@ -1,8 +1,8 @@
 import java.util.Random;
 import java.util.Scanner;
 
-import supplied.Board;
-import supplied.Move;
+//import supplied.Board;
+//import supplied.Move;
 
 /**
  * The Player class represents a player in the Nim game, producing Moves as a response to a Board state. Each player 
@@ -123,7 +123,7 @@ public class Player {
 	 * Produces a random move.
 	 */
 	private Move produceRandomMove(Board board){
-		/* You need to implement this method */
+		return null;
 	}
 	
 	/*
@@ -131,6 +131,7 @@ public class Player {
 	 */
 	private Move produceSmartMove(Board board){
 		/* You need to implement this method */
+		return null;
 	}
 	
 	/*
@@ -138,6 +139,7 @@ public class Player {
 	 */
 	private Move produceHumanMove(Board board){
 		/* You need to implement this method */
+		return null;
 	}
 	
 	/*
