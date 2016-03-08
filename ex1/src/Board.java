@@ -1,5 +1,3 @@
-//import solution.Move;
-
 /**
  * The Board class represents a board of the Nim game. The board can be of a variable size. In this implementation 
  * it only has 4 rows, 7 sticks in the first row, and 5,3 and 1 sticks in the following rows. A board object is 

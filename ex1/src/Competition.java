@@ -1,26 +1,24 @@
-import java.sql.Time;
 import java.util.Scanner;
-import java.util.StringJoiner;
 
 /**
  * The Competition class represents a Nim competition between two players, consisting of a given number of rounds. 
  * It also keeps track of the number of victories of each player.
  */
 public class Competition {
-	private static Player mPlayer1;
-    private static Player mPlayer2;
-    private static  boolean mDisplayMessage = true;
-    private static int p1Wins = 0;
-    private static int p2Wins = 0;
+	private final Player player1;
+    private final Player player2;
+    private final boolean displayMessage;
+    private int p1Wins = 0;
+    private int p2Wins = 0;
 
 	/* You need to implement this class */
 	public Competition(Player player1, Player player2, boolean displayMessage){
-        mPlayer1 = player1;
-        mPlayer2 = player2;
-        mDisplayMessage = true;// = displayMessage;
+        this.player1 = player1;
+        this.player2 = player2;
+        this.displayMessage = true;// = displayMessage; TODO: Delete true for production
 	}
 
-    public static int getPlayerScore(int playerPosition){
+    public int getPlayerScore(int playerPosition){
         switch (playerPosition){
             case 1:
                 return p1Wins;
@@ -32,9 +30,9 @@ public class Competition {
         }
     }
 
-    public static void playMultiple(int numRounds){
+    public void playMultiple(int numRounds){
         for (int i = 0; i < numRounds; i++) {
-            Player currentPlayer = mPlayer1;
+            Player currentPlayer = player1;
 
             Board board = new Board();
             printMessage("Welcome to the sticks game!");
@@ -43,10 +41,10 @@ public class Competition {
             while(board.getNumberOfUnmarkedSticks() > 0){
                 System.out.println(board); // TODO: Delete before production!
                 Move currentMove;
-                printMessage(String.format("Player %d, it is now your turn!", currentPlayer.getPlayerId()));
+                printMessage("Player " + currentPlayer.getPlayerId() + " it is now your turn!");
 
 
-                do {
+                while(true) {
                     currentMove = currentPlayer.produceMove(board);
 
                     if(board.markStickSequence(currentMove) < 0)
@@ -54,28 +52,28 @@ public class Competition {
                     else {
                         break;
                     }
-                } while(true);
+                }
 
-                printMessage(String.format("Player %d made the move: %s", currentPlayer.getPlayerId(), currentMove));
+                printMessage("Player " + currentPlayer.getPlayerId() + " made the move: " + currentMove);
 
-                if(currentPlayer.equals(mPlayer1))
-                    currentPlayer = mPlayer2;
+                if(currentPlayer.equals(player1))
+                    currentPlayer = player2;
                 else
-                    currentPlayer = mPlayer1;
+                    currentPlayer = player1;
             }
 
             switch (currentPlayer.getPlayerId()){
                 case 1:
                     p2Wins++;
-                    currentPlayer = mPlayer2;
+                    currentPlayer = player2;
                     break;
                 case 2:
                     p1Wins++;
-                    currentPlayer = mPlayer1;
+                    currentPlayer = player1;
                     break;
             }
 
-            System.out.println(String.format("Player %d won!", currentPlayer.getPlayerId()));
+            System.out.println("Player " + currentPlayer.getPlayerId() + " won!");
 
 
 
@@ -118,8 +116,8 @@ public class Competition {
 		}
 	}
 
-    private static void printMessage(String str){
-        if(mDisplayMessage)
+    private void printMessage(String str){
+        if(displayMessage)
             System.out.println(str);
     }
 
@@ -136,15 +134,21 @@ public class Competition {
 		int p2Type = parsePlayer2Type(args);
 		int numGames = parseNumberOfGames(args);
 
-        mPlayer1 = new Player(p1Type, 1, new Scanner(System.in));
-        mPlayer2 = new Player(p2Type, 2, new Scanner(System.in));
+        Scanner scanner = new Scanner(System.in);
 
-        System.out.println(String.format("Starting a Nim competition of %d rounds between a %s player and a %s player.",
-                numGames, mPlayer1.getTypeName(), mPlayer2.getTypeName()));
+        Player player1 = new Player(p1Type, 1, scanner);
+        Player player2 = new Player(p2Type, 2, scanner);
+
+        Competition competition = new Competition(player1, player2, false);
+
+        System.out.println("Starting a Nim competition of " + numGames + " rounds between a " + player1.getTypeName() +
+                " player and a " + player2.getTypeName() + " player.");
 
         long startTime = System.currentTimeMillis(); // TODO: Delete before production
-        playMultiple(numGames);
-        System.out.println(String.format("Player 1 score: %d\tPlayer 2 score: %d", getPlayerScore(1), getPlayerScore(2)));
+
+        competition.playMultiple(numGames);
+
+        System.out.println("The results are " + competition.getPlayerScore(1) + ":" + competition.getPlayerScore(2));
         System.out.println(String.format("Runtime: %d",System.currentTimeMillis() - startTime)); // TODO: Delete before production
 	}	
 	

@@ -1,9 +1,6 @@
 import java.util.Random;
 import java.util.Scanner;
 
-//import supplied.Board;
-//import supplied.Move;
-
 /**
  * The Player class represents a player in the Nim game, producing Moves as a response to a Board state. Each player 
  * is initialized with a type, either human or one of several computer strategies, which defines the move he 
@@ -123,12 +120,36 @@ public class Player {
 	 * Produces a random move.
 	 */
 	private Move produceRandomMove(Board board){
-        Random randomMoveGen = new Random();
+        Random randomGen = new Random();
+        int row, leftBound, rightBound;
 
-        int row = randomMoveGen.nextInt(board.getNumberOfRows());
-        //randomMoveGen
-    }
-	
+		// Iterate possible values for a move until a valid move is found.
+		do {
+			// Reset the variables before each iteration
+			leftBound = 0;
+			rightBound = 0;
+			row = randomGen.nextInt(board.getNumberOfRows()) + 1;
+
+			// Find first unmarked stick in selected row
+			for (int i = 1; i <= board.getRowLength(row); i++) {
+				if (board.isStickUnmarked(row, i)){
+					leftBound = i;
+					break; // Stop iteration when stick is found.
+				}
+			}
+
+			// Find the rest of the sequence
+			for (int i = leftBound; i <= board.getRowLength(row); i++) {
+				if(board.isStickUnmarked(row, i))
+					rightBound = i;
+			}
+		} while (leftBound == 0 || rightBound == 0 || row == 0); // Don't stop until valid move parameters found.
+
+		Move move = new Move(row, leftBound, rightBound);
+
+		return move;
+	}
+
 	/*
 	 * Produce some intelligent strategy to produce a move
 	 */
@@ -141,8 +162,8 @@ public class Player {
 	 * Interact with the user to produce his move.
 	 */
 	private Move produceHumanMove(Board board){
-		/* You need to implement this method */
-        do {
+		// Continuous loop to get user input. It will stop only when it receives valid input which is sufficient to create a new move
+		while(true) {
             System.out.println("Press 1 to display the board. Press 2 to make a move.");
             int inRow;
             int leftBound;
@@ -169,7 +190,7 @@ public class Player {
                     System.out.println("Unsupported command");
                     break;
             }
-        } while(true);
+        }
 
     }
 	

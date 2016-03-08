@@ -4,9 +4,9 @@
  */
 public class Move {
 
-    private final int mInRow;
-    private final int mInLeft;
-    private final int mInRight;
+    private final int inRow;
+    private final int inLeft;
+    private final int inRight;
 
     /**
      * Constructs a Move object with the given parameters
@@ -15,30 +15,30 @@ public class Move {
      * @param inRight The right bound of the sequence to mark.
      */
     public Move(int inRow,int inLeft,int inRight) {
-        mInRow = inRow;
-        mInLeft = inLeft;
-        mInRight = inRight;
+        this.inRow = inRow;
+        this.inLeft = inLeft;
+        this.inRight = inRight;
     }
 
     /**
      * @return The row on which the move is performed.
      */
     public int getRow(){
-        return mInRow;
+        return inRow;
     }
 
     /**
      * @return The left bound of the stick sequence to mark.
      */
     public int getLeftBound(){
-        return mInLeft;
+        return inLeft;
     }
 
     /**
      * @return The right bound of the stick sequence to mark.
      */
     public int getRightBound(){
-        return mInRight;
+        return inRight;
     }
 
     /**
@@ -48,6 +48,6 @@ public class Move {
      */
     @Override
     public String toString() {
-        return String.format("%d:%d-%d", mInRow, mInLeft, mInRight);
+        return inRow + ":" + inLeft + "-" + inRight;
     }
 }
