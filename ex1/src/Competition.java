@@ -11,13 +11,17 @@ public class Competition {
     private int p1Wins = 0;
     private int p2Wins = 0;
 
-	/* You need to implement this class */
 	public Competition(Player player1, Player player2, boolean displayMessage){
         this.player1 = player1;
         this.player2 = player2;
-        this.displayMessage = true;// = displayMessage; TODO: Delete true for production
+        this.displayMessage = displayMessage;
 	}
 
+    /**
+     * Rturns the score for the give player ID
+     * @param playerPosition player Id number
+     * @return the winning score of the player.
+     */
     public int getPlayerScore(int playerPosition){
         switch (playerPosition){
             case 1:
@@ -30,23 +34,27 @@ public class Competition {
         }
     }
 
+    /**
+     * Play a given number of games.
+     * @param numRounds number of games to play.
+     */
     public void playMultiple(int numRounds){
         for (int i = 0; i < numRounds; i++) {
-            Player currentPlayer = player1;
+            Player currentPlayer = player1; // Set the current player.
 
             Board board = new Board();
             printMessage("Welcome to the sticks game!");
 
-
+            // Play the game until there are no unmarked sticks on the board.
             while(board.getNumberOfUnmarkedSticks() > 0){
-                System.out.println(board); // TODO: Delete before production!
                 Move currentMove;
-                printMessage("Player " + currentPlayer.getPlayerId() + " it is now your turn!");
+                printMessage("Player " + currentPlayer.getPlayerId() + ", it is now your turn!");
 
-
+                /* Get a valid move from the player and try playing.
+                    in case the move is invalid, ask the player to try another move.
+                 */
                 while(true) {
                     currentMove = currentPlayer.produceMove(board);
-
                     if(board.markStickSequence(currentMove) < 0)
                         printMessage("Invalid move. Enter another:");
                     else {
@@ -56,24 +64,24 @@ public class Competition {
 
                 printMessage("Player " + currentPlayer.getPlayerId() + " made the move: " + currentMove);
 
+                // Swith players.
                 if(currentPlayer.equals(player1))
                     currentPlayer = player2;
                 else
                     currentPlayer = player1;
             }
 
+            // Increase the score of the winning player.
             switch (currentPlayer.getPlayerId()){
                 case 1:
-                    p2Wins++;
-                    currentPlayer = player2;
+                    p1Wins++;
                     break;
                 case 2:
-                    p1Wins++;
-                    currentPlayer = player1;
+                    p2Wins++;
                     break;
             }
 
-            System.out.println("Player " + currentPlayer.getPlayerId() + " won!");
+            printMessage("Player " + currentPlayer.getPlayerId() + " won!");
 
 
 
@@ -116,6 +124,10 @@ public class Competition {
 		}
 	}
 
+    /**
+     * Prints a given string if displayMessage is set to true.
+     * @param str String to print to the console.
+     */
     private void printMessage(String str){
         if(displayMessage)
             System.out.println(str);
@@ -133,23 +145,25 @@ public class Competition {
 		int p1Type = parsePlayer1Type(args);
 		int p2Type = parsePlayer2Type(args);
 		int numGames = parseNumberOfGames(args);
-
         Scanner scanner = new Scanner(System.in);
 
+        // Create player objects according to the passed in arguments.
         Player player1 = new Player(p1Type, 1, scanner);
         Player player2 = new Player(p2Type, 2, scanner);
 
-        Competition competition = new Competition(player1, player2, false);
+        // Check if any of the players is human. In case there's a human the game will be player in verbose mode.
+        boolean isHuman = player1.getPlayerType() == Player.HUMAN || player2.getPlayerType() == Player.HUMAN;
+
+        // Create a new instace of Competition object with the given params.
+        Competition competition = new Competition(player1, player2, isHuman);
 
         System.out.println("Starting a Nim competition of " + numGames + " rounds between a " + player1.getTypeName() +
                 " player and a " + player2.getTypeName() + " player.");
 
-        long startTime = System.currentTimeMillis(); // TODO: Delete before production
-
+        // Play the given number of games.
         competition.playMultiple(numGames);
 
         System.out.println("The results are " + competition.getPlayerScore(1) + ":" + competition.getPlayerScore(2));
-        System.out.println(String.format("Runtime: %d",System.currentTimeMillis() - startTime)); // TODO: Delete before production
 	}	
 	
 }

@@ -6,10 +6,19 @@ jenia90
 =============================
 =      File description     =
 =============================
-Book.java - This class represents a book, which has a title, author, year of publication and different literary aspects
-Library.java - This class represents a library, which holds a collection of books.
-               Patrons can register at the library to be able to check out books, if a copy of the requested book is available.
-Patron.java - This class represents a library patron that has a name and assigns values to different literary aspects of books.
+Board.java - The Board class represents a board of the Nim game. The board can be of a variable size. In this implementation
+             it only has 4 rows, 7 sticks in the first row, and 5,3 and 1 sticks in the following rows. A board object is
+             disposable, meaning that the moves performed on the board are not reversible, and if a "clean" board is required,
+             the user has to initialize a new board object.
+Competition.java - The Competition class represents a Nim competition between two players, consisting of a given number of rounds.
+                   It also keeps track of the number of victories of each player.
+Move.java - The Move class represents a move in the Nim game by a player. A move consists of the row on which it is applied,
+            the left bound (inclusive) of the sequence of sticks to mark, and the right bound (inclusive) of the same sequence.
+Player.java - The Player class represents a player in the Nim game, producing Moves as a response to a Board state. Each player
+              is initialized with a type, either human or one of several computer strategies, which defines the move he
+              produces when given a board in some state. The heuristic strategy of the player is already implemented. You are
+              required to implement the rest of the player types according to the exercise description.
+README - This file.
 
 
 
@@ -23,8 +32,10 @@ All implementations were done according to the exercise description, JavaDocs an
 =============================
 =  Implementation details   =
 =============================
-I used the index of items in books and patrons arrays as ids for the objects. This will guarantee unique id for each item
-assigned to the arrays.
+The idea behind the implementation of the smart player was to always leave the board in an even state of parity.
+This would most of the times assure winning position for the smart player because the nim sum of even number of sticks
+is zero which is the losing state.
+Also i chose to start from the upper row of sticks
 
 
 =============================

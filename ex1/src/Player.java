@@ -145,44 +145,54 @@ public class Player {
 			}
 		} while (leftBound == 0 || rightBound == 0 || row == 0); // Don't stop until valid move parameters found.
 
-		Move move = new Move(row, leftBound, rightBound);
-
-		return move;
+		return new Move(row, leftBound, rightBound);
 	}
 
 	/*
 	 * Produce some intelligent strategy to produce a move
 	 */
-	private Move produceSmartMove(Board board){
-		/* You need to implement this method */
+	private Move produceSmartMove(Board board) {
+		int length = 1;
+
+		// Check the parity of unmarked sticks. if even then we should remove 2 sticks
+		if(board.getNumberOfUnmarkedSticks() % 2 == 0)
+			length = 2;
+
+		// Finds the best move of 1 or 2 sticks based on the parity of current board state.
+		for (int r = board.getNumberOfRows(); r >= 1; r--) {
+			for (int s = 1; s <= board.getRowLength(r); s++) {
+				if(board.isStickUnmarked(r, s)){
+					if(length == 1)
+						return new Move(r, s, s); // returns the odd parity move
+					else if(board.isStickUnmarked(r, s + 1)) // checks if the next stick is mark-able.
+						return new Move(r, s, s + 1); //returns the even parity move.
+				}
+			}
+		}
 		return null;
 	}
-	
 	/*
 	 * Interact with the user to produce his move.
 	 */
 	private Move produceHumanMove(Board board){
-		// Continuous loop to get user input. It will stop only when it receives valid input which is sufficient to create a new move
+		// Continuous loop to get user input. It shall stop only when it receives valid input which is sufficient to create a new move
 		while(true) {
-            System.out.println("Press 1 to display the board. Press 2 to make a move.");
-            int inRow;
-            int leftBound;
-            int rightBound;
-            int usrInput = scanner.nextInt();
+            System.out.println("Press 1 to display the board. Press 2 to make a move:");
 
+            int usrInput = scanner.nextInt();
             switch (usrInput){
                 case 1:
                     System.out.println(board);
                     break;
                 case 2:
                     System.out.println("Enter the row number: ");
-                    inRow = scanner.nextInt();
+                    int inRow = scanner.nextInt();
 
                     System.out.println("Enter the index of the leftmost stick: ");
-                    leftBound = scanner.nextInt();
+                    int leftBound = scanner.nextInt();
 
                     System.out.println("Enter the index of the rightmost stick: ");
-                    rightBound = scanner.nextInt();
+                    int rightBound = scanner.nextInt();
 
                     return new Move(inRow, leftBound, rightBound);
 
