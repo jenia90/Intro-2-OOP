@@ -8,18 +8,17 @@ import oop.ex2.*;
  *  
  * @author oop
  */
-public class SpaceShip{
+public abstract class SpaceShip{
 
-   
+    protected static final int ENERGY_LEVEL = 210;
+    private static final int HEALTH = 22;
     /**
      * Does the actions of this ship for this round. 
      * This is called once per round by the SpaceWars game driver.
      * 
      * @param game the game object to which this ship belongs.
      */
-    public void doAction(SpaceWars game) {
-
-    }
+    public abstract void doAction(SpaceWars game);
 
     /**
      * This method is called every time a collision with this ship occurs 
@@ -32,9 +31,7 @@ public class SpaceShip{
      * This method is called whenever a ship has died. It resets the ship's 
      * attributes, and starts it at a new random position.
      */
-    public void reset(){
-
-    }
+    public abstract void reset();
 
     /**
      * Checks if this ship is dead.
@@ -50,9 +47,7 @@ public class SpaceShip{
      * 
      * @return the physics object that controls the ship.
      */
-    public SpaceShipPhysics getPhysics() {
-        return null;
-    }
+    public abstract SpaceShipPhysics getPhysics();
 
     /**
      * This method is called by the SpaceWars game object when ever this ship
