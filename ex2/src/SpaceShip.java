@@ -10,8 +10,33 @@ import oop.ex2.*;
  */
 public abstract class SpaceShip{
 
-    protected static final int ENERGY_LEVEL = 210;
-    private static final int HEALTH = 22;
+    private static final int INIT_ENERGY = 190;
+    private static final int MAX_HEALTH = 22;
+    private static final int SHOT_ENERGY_COST = 19;
+    private static final int TELEPORT_ENERGY_COST = 140;
+
+    private int healthLevel;
+    private int currentEnergyLevel;
+    private int maxEnergyLevel = 210;
+    private SpaceShipPhysics shipPhysics;
+    private boolean shieldOn = false;
+    private int gunCoolDown = 0;
+
+    /**
+     * Updates gun cool down period.
+     */
+    public void updateGunCoolDown(){
+        if(gunCoolDown > 0)
+            gunCoolDown--;
+    }
+
+    /**
+     * Charges energy each round.
+     */
+    public void chargeEnergy(){
+        if(currentEnergyLevel < maxEnergyLevel)
+            currentEnergyLevel++;
+    }
     /**
      * Does the actions of this ship for this round. 
      * This is called once per round by the SpaceWars game driver.
@@ -24,14 +49,36 @@ public abstract class SpaceShip{
      * This method is called every time a collision with this ship occurs 
      */
     public void collidedWithAnotherShip(){
+        if(!isShieldOn()) {
+            updateNoShieldStats();
+        }
 
+        else {
+            maxEnergyLevel += 18;
+            currentEnergyLevel += 18;
+        }
+    }
+
+    /**
+     * Updates energy and health levels in case of hits and collisions.
+     */
+    private void updateNoShieldStats() {
+        healthLevel--;
+
+        currentEnergyLevel -= 10;
+        if(currentEnergyLevel > maxEnergyLevel)
+            maxEnergyLevel = currentEnergyLevel;
     }
 
     /** 
      * This method is called whenever a ship has died. It resets the ship's 
      * attributes, and starts it at a new random position.
      */
-    public abstract void reset();
+    public void reset() {
+        shipPhysics = new SpaceShipPhysics();
+        healthLevel = MAX_HEALTH;
+        currentEnergyLevel = INIT_ENERGY;
+    }
 
     /**
      * Checks if this ship is dead.
@@ -39,7 +86,7 @@ public abstract class SpaceShip{
      * @return true if the ship is dead. false otherwise.
      */
     public boolean isDead() {
-        return false;
+        return healthLevel == 0;
     }
 
     /**
@@ -47,14 +94,18 @@ public abstract class SpaceShip{
      * 
      * @return the physics object that controls the ship.
      */
-    public abstract SpaceShipPhysics getPhysics();
+    public SpaceShipPhysics getPhysics(){
+        return shipPhysics;
+    }
+
 
     /**
      * This method is called by the SpaceWars game object when ever this ship
      * gets hit by a shot.
      */
     public void gotHit() {
-
+        if(!isShieldOn())
+            updateNoShieldStats();
     }
 
     /**
@@ -64,9 +115,7 @@ public abstract class SpaceShip{
      * 
      * @return the image of this ship.
      */
-    public Image getImage(){
-        return null;
-    }
+    public abstract Image getImage();
 
     /**
      * Attempts to fire a shot.
@@ -74,21 +123,50 @@ public abstract class SpaceShip{
      * @param game the game object.
      */
     public void fire(SpaceWars game) {
-       
+        if(currentEnergyLevel >= SHOT_ENERGY_COST && gunCoolDown == 0) {
+            game.addShot(shipPhysics);
+            currentEnergyLevel -= SHOT_ENERGY_COST;
+            gunCoolDown = 7;
+        }
     }
 
     /**
      * Attempts to turn on the shield.
      */
     public void shieldOn() {
-        
+        if(currentEnergyLevel >= 3 && !isShieldOn())
+            shieldOn = true;
+        else
+            shieldOn = false;
+    }
+
+    /**
+     * Returns current shield status.
+     * @return current shield status.
+     */
+    public boolean isShieldOn(){
+        return shieldOn;
+    }
+
+    /**
+     * Updates shield status based on energy levels.
+     */
+    public void updateShield(){
+        if (isShieldOn()){
+            if(currentEnergyLevel >= 3)
+                currentEnergyLevel -= 3;
+            else
+                shieldOn();
+        }
     }
 
     /**
      * Attempts to teleport.
      */
     public void teleport() {
-       
+       if(currentEnergyLevel >= TELEPORT_ENERGY_COST){
+           shipPhysics = new SpaceShipPhysics();
+           currentEnergyLevel -= TELEPORT_ENERGY_COST;
+       }
     }
-    
 }

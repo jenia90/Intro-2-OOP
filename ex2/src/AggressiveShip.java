@@ -1,15 +1,11 @@
 import oop.ex2.SpaceShipPhysics;
 
+import java.awt.*;
+
 /**
  * Created by jenia on 13/03/2016.
  */
-public class AggressiveShip extends SpaceShip {
-
-    private SpaceShipPhysics shipPhysics;
-
-    public AggressiveShip(){
-        reset();
-    }
+public class AggressiveShip extends SpaceShip{
     /**
      * Does the actions of this ship for this round.
      * This is called once per round by the SpaceWars game driver.
@@ -22,21 +18,14 @@ public class AggressiveShip extends SpaceShip {
     }
 
     /**
-     * This method is called whenever a ship has died. It resets the ship's
-     * attributes, and starts it at a new random position.
-     */
-    @Override
-    public void reset() {
-        shipPhysics = new SpaceShipPhysics();
-    }
-
-    /**
-     * Gets the physics object that controls this ship.
+     * Gets the image of this ship. This method should return the image of the
+     * ship with or without the shield. This will be displayed on the GUI at
+     * the end of the round.
      *
-     * @return the physics object that controls the ship.
+     * @return the image of this ship.
      */
     @Override
-    public SpaceShipPhysics getPhysics() {
-        return shipPhysics;
+    public Image getImage() {
+        return null;
     }
 }

@@ -1,11 +1,13 @@
-import oop.ex2.SpaceShipPhysics;
+import oop.ex2.GameGUI;
+
+import java.awt.*;
 
 /**
  * Created by jenia on 13/03/2016.
  */
 public class HumanShip extends SpaceShip{
 
-    private SpaceShipPhysics shipPhysics;
+    private static boolean INIT_ACCELERATION = false;
 
     public HumanShip(){
         reset();
@@ -18,26 +20,46 @@ public class HumanShip extends SpaceShip{
      */
     @Override
     public void doAction(SpaceWars game) {
+        GameGUI gui = game.getGUI();
+        int turnDirection = 0;
+        boolean acceleration = INIT_ACCELERATION;
 
+        if (game.getGUI().isTeleportPressed())
+            teleport();
+        else if(gui.isUpPressed() || gui.isRightPressed() || gui.isLeftPressed()){
+            acceleration = gui.isUpPressed();
+
+            if(gui.isLeftPressed() && !gui.isRightPressed())
+                turnDirection = 1;
+            else if(gui.isRightPressed() && !gui.isLeftPressed())
+                turnDirection = -1;
+        }
+
+
+        else if (gui.isShieldsPressed())
+            shieldOn();
+        else if (gui.isShotPressed()) {
+            fire(game);
+        }
+        else
+            chargeEnergy();
+
+        getPhysics().move(acceleration, turnDirection);
+        updateGunCoolDown();
+        updateShield();
     }
 
     /**
-     * This method is called whenever a ship has died. It resets the ship's
-     * attributes, and starts it at a new random position.
-     */
-    @Override
-    public void reset() {
-        shipPhysics = new SpaceShipPhysics();
-
-    }
-
-    /**
-     * Gets the physics object that controls this ship.
+     * Gets the image of this ship. This method should return the image of the
+     * ship with or without the shield. This will be displayed on the GUI at
+     * the end of the round.
      *
-     * @return the physics object that controls the ship.
+     * @return the image of this ship.
      */
     @Override
-    public SpaceShipPhysics getPhysics() {
-        return shipPhysics;
+    public Image getImage() {
+        if (isShieldOn())
+            return GameGUI.SPACESHIP_IMAGE_SHIELD;
+        return GameGUI.SPACESHIP_IMAGE;
     }
 }
