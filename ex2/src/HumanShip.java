@@ -8,6 +8,9 @@ import java.awt.*;
 public class HumanShip extends SpaceShip{
 
     private static boolean INIT_ACCELERATION = false;
+    private static final int INIT_DIRECTION = 0;
+    private static final int LEFT_TURN = 1;
+    private static final int RIGHT_TURN = -1;
 
     public HumanShip(){
         reset();
@@ -21,7 +24,7 @@ public class HumanShip extends SpaceShip{
     @Override
     public void doAction(SpaceWars game) {
         GameGUI gui = game.getGUI();
-        int turnDirection = 0;
+        int turnDirection = INIT_DIRECTION;
         boolean acceleration = INIT_ACCELERATION;
 
         if (game.getGUI().isTeleportPressed())
@@ -30,9 +33,9 @@ public class HumanShip extends SpaceShip{
             acceleration = gui.isUpPressed();
 
             if(gui.isLeftPressed() && !gui.isRightPressed())
-                turnDirection = 1;
+                turnDirection = LEFT_TURN;
             else if(gui.isRightPressed() && !gui.isLeftPressed())
-                turnDirection = -1;
+                turnDirection = RIGHT_TURN;
         }
 
 
