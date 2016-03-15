@@ -8,9 +8,6 @@ import java.awt.*;
 public class HumanShip extends SpaceShip{
 
     private static boolean INIT_ACCELERATION = false;
-    private static final int INIT_DIRECTION = 0;
-    private static final int LEFT_TURN = 1;
-    private static final int RIGHT_TURN = -1;
 
     public HumanShip(){
         reset();
@@ -24,8 +21,9 @@ public class HumanShip extends SpaceShip{
     @Override
     public void doAction(SpaceWars game) {
         GameGUI gui = game.getGUI();
-        int turnDirection = INIT_DIRECTION;
+        int turnDirection = STRAIGHT_HEADING;
         boolean acceleration = INIT_ACCELERATION;
+        shieldControl(false);
 
         if (game.getGUI().isTeleportPressed())
             teleport();
@@ -40,7 +38,7 @@ public class HumanShip extends SpaceShip{
 
 
         else if (gui.isShieldsPressed())
-            shieldOn();
+            shieldControl(true);
         else if (gui.isShotPressed()) {
             fire(game);
         }
@@ -49,7 +47,7 @@ public class HumanShip extends SpaceShip{
 
         getPhysics().move(acceleration, turnDirection);
         updateGunCoolDown();
-        updateShield();
+        updateShieldStats();
     }
 
     /**

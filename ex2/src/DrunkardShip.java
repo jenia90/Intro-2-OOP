@@ -1,11 +1,14 @@
-import oop.ex2.SpaceShipPhysics;
-
-import java.awt.*;
+import java.util.Random;
 
 /**
+ * This class represents a Space ship with a drunk driver.
  * Created by jenia on 13/03/2016.
  */
 public class DrunkardShip extends SpaceShip{
+
+    public DrunkardShip(){
+        reset();
+    }
     /**
      * Does the actions of this ship for this round.
      * This is called once per round by the SpaceWars game driver.
@@ -14,18 +17,7 @@ public class DrunkardShip extends SpaceShip{
      */
     @Override
     public void doAction(SpaceWars game) {
+        Random rand = new Random();
 
-    }
-
-    /**
-     * Gets the image of this ship. This method should return the image of the
-     * ship with or without the shield. This will be displayed on the GUI at
-     * the end of the round.
-     *
-     * @return the image of this ship.
-     */
-    @Override
-    public Image getImage() {
-        return null;
     }
 }
