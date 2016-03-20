@@ -1,9 +1,5 @@
-import oop.ex2.SpaceShipPhysics;
-
-import java.awt.*;
-
 /**
- * Created by jenia on 13/03/2016.
+ * This class implements the Runner space ship.
  */
 public class RunnerShip extends SpaceShip{
 
@@ -18,6 +14,6 @@ public class RunnerShip extends SpaceShip{
      */
     @Override
     public void doAction(SpaceWars game) {
-        runnerStrategy(game);
+        runnerBehaviour(game);
     }
 }

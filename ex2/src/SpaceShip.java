@@ -1,4 +1,6 @@
 import java.awt.Image;
+import java.util.concurrent.CopyOnWriteArraySet;
+
 import oop.ex2.*;
 
 /**
@@ -11,13 +13,16 @@ import oop.ex2.*;
 public abstract class SpaceShip{
 
     /**
-     * Constants to use in this super class only.
+     * Constants for use of the SpaceShip class only.
      */
     private static final int INIT_ENERGY = 190;
+    private static final int INIT_MAX_ENERGY = 210;
     private static final int MAX_HEALTH = 22;
     private static final int SHOT_ENERGY_COST = 19;
     private static final int TELEPORT_ENERGY_COST = 140;
     private static final int SHIELD_ENERGY_COST = 3;
+    private static final int GUN_COOL_DOWN_PERIOD = 7;
+
 
     /**
      * Constats for use in this and extended classes.
@@ -25,6 +30,7 @@ public abstract class SpaceShip{
     protected static final int STRAIGHT_HEADING = 0;
     protected static final int LEFT_TURN = 1;
     protected static final int RIGHT_TURN = -1;
+    protected static final boolean ENEMYSHIP_ACCELERATION = true;
 
     /**
      * In game member variables.
@@ -93,7 +99,7 @@ public abstract class SpaceShip{
         shipPhysics = new SpaceShipPhysics();
         healthLevel = MAX_HEALTH;
         currentEnergyLevel = INIT_ENERGY;
-        maxEnergyLevel = 210;
+        maxEnergyLevel = INIT_MAX_ENERGY;
         gunCoolDown = 0;
         shieldOn = false;
     }
@@ -122,7 +128,7 @@ public abstract class SpaceShip{
      * gets hit by a shot.
      */
     public void gotHit() {
-        if(!shieldOn)
+        if(!isShieldOn())
             updateNoShieldStats();
     }
 
@@ -134,7 +140,7 @@ public abstract class SpaceShip{
      * @return the image of this ship.
      */
     public Image getImage(){
-        if(shieldOn)
+        if(isShieldOn())
             return GameGUI.ENEMY_SPACESHIP_IMAGE_SHIELD;
         return GameGUI.ENEMY_SPACESHIP_IMAGE;
     }
@@ -148,7 +154,7 @@ public abstract class SpaceShip{
         if(currentEnergyLevel >= SHOT_ENERGY_COST && gunCoolDown == 0) {
             game.addShot(shipPhysics);
             currentEnergyLevel -= SHOT_ENERGY_COST;
-            gunCoolDown = 7;
+            gunCoolDown = GUN_COOL_DOWN_PERIOD;
         }
     }
 
@@ -156,7 +162,7 @@ public abstract class SpaceShip{
      * Attempts to turn on the shield.
      */
     public void shieldOn() {
-        if(currentEnergyLevel >= SHIELD_ENERGY_COST && !shieldOn)
+        if(currentEnergyLevel >= SHIELD_ENERGY_COST && !isShieldOn())
             shieldOn = true;
         else
             shieldOn = false;
@@ -166,7 +172,7 @@ public abstract class SpaceShip{
      * Turns on or off the shield by request.
      * @param command turns on the shield if true; turns off otherwise.
      */
-    public void shieldControl(boolean command){
+    protected void shieldControl(boolean command){
         if(command)
             shieldOn();
         else
@@ -176,14 +182,14 @@ public abstract class SpaceShip{
     /**
      * Gets current shield status.
      */
-    public boolean isShieldOn(){
+    protected boolean isShieldOn(){
         return shieldOn;
     }
 
     /**
      * Reduces the current energy level whenever the shield is on.
      */
-    public void updateShieldStats(){
+    protected void updateShieldStats(){
         if(isShieldOn())
             currentEnergyLevel -= SHIELD_ENERGY_COST;
     }
@@ -205,46 +211,48 @@ public abstract class SpaceShip{
      */
     protected void pursuitShip(SpaceShipPhysics shipPhysics, double angle){
         if(angle > 0){
-            shipPhysics.move(true, LEFT_TURN);
+            shipPhysics.move(ENEMYSHIP_ACCELERATION, LEFT_TURN);
         } else if (angle < 0) {
-            shipPhysics.move(true, RIGHT_TURN);
+            shipPhysics.move(ENEMYSHIP_ACCELERATION, RIGHT_TURN);
         } else
-            shipPhysics.move(true, STRAIGHT_HEADING);
+            shipPhysics.move(ENEMYSHIP_ACCELERATION, STRAIGHT_HEADING);
     }
 
     /**
      * Strategy for a ship that tries to bash other ships. When it's about to bash it turns on the shield.
      * @param game SpaceWars object representing the current game
      */
-    protected void basherStrategy(SpaceWars game){
-        SpaceShip closest = game.getClosestShipTo(this);
+    protected void basherBehaviour(SpaceWars game){
+        SpaceShip closest = game.getClosestShipTo(this); // gets the closest ship
         SpaceShipPhysics physics = getPhysics();
-        double angle = getPhysics().angleTo(closest.getPhysics());
+        double angle = getPhysics().angleTo(closest.getPhysics()); // gets the angle to the closest ship
         double distance = getPhysics().distanceFrom(closest.getPhysics());
+
+        pursuitShip(physics, angle);
 
         if(distance <= 0.19)
             shieldControl(true);
         else{
             shieldControl(false);
-            chargeEnergy();
         }
 
-        pursuitShip(physics, angle);
         updateShieldStats();
+        chargeEnergy();
     }
 
     /**
      * Strategy for a ship that aggressively attacks other ships by firing and chasing them.
      * @param game SpaceWars object representing the current game
      */
-    protected void aggressiveStrategy(SpaceWars game){
-        SpaceShip closest = game.getClosestShipTo(this);
-        double angle = getPhysics().angleTo(closest.getPhysics());
+    protected void aggressiveBehaviour(SpaceWars game){
+        SpaceShip closest = game.getClosestShipTo(this); // gets the closest ship
+        double angle = getPhysics().angleTo(closest.getPhysics()); // gets the angle to the closest ship
+
+        pursuitShip(getPhysics(), angle);
 
         if(angle < 0.21)
             fire(game);
 
-        pursuitShip(getPhysics(), angle);
         updateGunCoolDown();
         chargeEnergy();
     }
@@ -253,7 +261,7 @@ public abstract class SpaceShip{
      * Strategy for a ship that runs away from other ships and avoids collision.
      * @param game SpaceWars object representing the current game
      */
-    protected void runnerStrategy(SpaceWars game){
+    protected void runnerBehaviour(SpaceWars game){
         SpaceShip closest = game.getClosestShipTo(this);
         SpaceShipPhysics physics = getPhysics();
         double angle = getPhysics().angleTo(closest.getPhysics());
@@ -263,9 +271,9 @@ public abstract class SpaceShip{
             teleport();
 
         if(angle >= 0){
-            physics.move(true, RIGHT_TURN);
+            physics.move(ENEMYSHIP_ACCELERATION, RIGHT_TURN);
         } else if (angle < 0) {
-            physics.move(true, LEFT_TURN);
+            physics.move(ENEMYSHIP_ACCELERATION, LEFT_TURN);
         }
     }
 }

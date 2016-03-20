@@ -3,31 +3,37 @@ import oop.ex2.GameGUI;
 import java.awt.*;
 
 /**
- * Created by jenia on 13/03/2016.
+ * This class implements the Human controlled space ship.
  */
 public class HumanShip extends SpaceShip{
 
-    private static boolean INIT_ACCELERATION = false;
+    private static boolean HUMANSHIP_INIT_ACCELERATION = false; // Constant
 
+    /**
+     * HumanShip class constructor.
+     *
+     * Calls the reset() method of SpaceShip class to reset all parameters to initial state.
+     */
     public HumanShip(){
         reset();
     }
     /**
-     * Does the actions of this ship for this round.
-     * This is called once per round by the SpaceWars game driver.
+     * Deals with the user input to control this ship.
      *
      * @param game the game object to which this ship belongs.
      */
     @Override
     public void doAction(SpaceWars game) {
-        GameGUI gui = game.getGUI();
-        int turnDirection = STRAIGHT_HEADING;
-        boolean acceleration = INIT_ACCELERATION;
-        shieldControl(false);
+        GameGUI gui = game.getGUI(); // gets current GUI object
+        int turnDirection = STRAIGHT_HEADING; // reset the heading direction at the beginning of each round.
+        boolean acceleration = HUMANSHIP_INIT_ACCELERATION; // disable acceleration at the beginning of each round.
+        shieldControl(false); // make sure shield is off at the beginning of each round
 
-        if (game.getGUI().isTeleportPressed())
+        if (game.getGUI().isTeleportPressed()) // checks if teleport button is pressed.
             teleport();
-        else if(gui.isUpPressed() || gui.isRightPressed() || gui.isLeftPressed()){
+
+        // Checks if any of the navigation buttons pressed and navigates the ship's movement accordingly.
+        if(gui.isUpPressed() || gui.isRightPressed() || gui.isLeftPressed()){
             acceleration = gui.isUpPressed();
 
             if(gui.isLeftPressed() && !gui.isRightPressed())
@@ -36,24 +42,21 @@ public class HumanShip extends SpaceShip{
                 turnDirection = RIGHT_TURN;
         }
 
-
-        else if (gui.isShieldsPressed())
+        if (gui.isShieldsPressed())
             shieldControl(true);
-        else if (gui.isShotPressed()) {
+
+        if (gui.isShotPressed()) {
             fire(game);
         }
-        else
-            chargeEnergy();
 
         getPhysics().move(acceleration, turnDirection);
-        updateGunCoolDown();
-        updateShieldStats();
+        updateGunCoolDown(); // updates gun cool down timer.
+        updateShieldStats(); // updates shield stats
+        chargeEnergy();
     }
 
     /**
-     * Gets the image of this ship. This method should return the image of the
-     * ship with or without the shield. This will be displayed on the GUI at
-     * the end of the round.
+     * Overrides the default getImage() implementation and assigns the player images.
      *
      * @return the image of this ship.
      */

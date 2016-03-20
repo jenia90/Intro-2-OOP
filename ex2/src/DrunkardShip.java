@@ -1,13 +1,20 @@
 import java.util.Random;
 
 /**
- * This class represents a Space ship with a drunk driver.
- * Created by jenia on 13/03/2016.
+ * This class implements the Drunkard ship.
  */
 public class DrunkardShip extends SpaceShip{
+    private static final int COUNTER_MAX = 24;
+
+    private int turnDirection;
+    private int counter;
+    private boolean accelerate;
 
     public DrunkardShip(){
         reset();
+        turnDirection = LEFT_TURN;
+        counter = 0;
+        accelerate = false;
     }
     /**
      * Does the actions of this ship for this round.
@@ -19,5 +26,32 @@ public class DrunkardShip extends SpaceShip{
     public void doAction(SpaceWars game) {
         Random rand = new Random();
 
+        if(counter == 0){
+            accelerate = rand.nextBoolean();
+            switch (rand.nextInt(3)){
+                case 0:
+                    turnDirection = LEFT_TURN;
+                    break;
+                case 1:
+                    turnDirection = RIGHT_TURN;
+                    break;
+                case 2:
+                    turnDirection = STRAIGHT_HEADING;
+                    break;
+            }
+
+            counter = COUNTER_MAX;
+        }
+
+        if(rand.nextBoolean())
+            fire(game);
+
+        if(rand.nextBoolean())
+            teleport();
+
+        getPhysics().move(accelerate, turnDirection);
+        updateGunCoolDown();
+        chargeEnergy();
+        counter--;
     }
 }

@@ -1,7 +1,5 @@
-import oop.ex2.SpaceShipPhysics;
-
 /**
- * Created by jenia on 13/03/2016.
+ * This class implements the Aggressive space ship.
  */
 public class AggressiveShip extends SpaceShip{
 
@@ -16,6 +14,6 @@ public class AggressiveShip extends SpaceShip{
      */
     @Override
     public void doAction(SpaceWars game) {
-        aggressiveStrategy(game);
+        aggressiveBehaviour(game);
     }
 }

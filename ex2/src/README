@@ -6,36 +6,46 @@ jenia90
 =============================
 =      File description     =
 =============================
-Board.java - The Board class represents a board of the Nim game. The board can be of a variable size. In this implementation
-             it only has 4 rows, 7 sticks in the first row, and 5,3 and 1 sticks in the following rows. A board object is
-             disposable, meaning that the moves performed on the board are not reversible, and if a "clean" board is required,
-             the user has to initialize a new board object.
-Competition.java - The Competition class represents a Nim competition between two players, consisting of a given number of rounds.
-                   It also keeps track of the number of victories of each player.
-Move.java - The Move class represents a move in the Nim game by a player. A move consists of the row on which it is applied,
-            the left bound (inclusive) of the sequence of sticks to mark, and the right bound (inclusive) of the same sequence.
-Player.java - The Player class represents a player in the Nim game, producing Moves as a response to a Board state. Each player
-              is initialized with a type, either human or one of several computer strategies, which defines the move he
-              produces when given a board in some state. The heuristic strategy of the player is already implemented. You are
-              required to implement the rest of the player types according to the exercise description.
-README - This file.
+AggressiveShip.java - Contains the AggressiveShip class implementation
 
+BasherShip.java - Contains the BasherShip class implementation
 
+DrunkardShip.java - Contains the DrunkardShip class implementation
+
+HumanShip.java - Contains the HumanShip class implementation
+
+RunnerShip.java - Contains the RunnerShip class implementation
+
+SpaceShip.java - Contains the SpaceShip class implementation
+
+SpaceShipFactory.java - Contains the SpaceShipFactory class implementation
+
+SpecialShip.java - Contains the SpecialShip class implementation
 
 =============================
 =          Design           =
 =============================
-All implementations were done according to the exercise description, JavaDocs and API descriptions
+The main design of the behaviour of space ships was done according to the course guidelines.
+Further explanations and considerations are explained in the implementation details part.
 
+Few words about the DrunkardShip and the SpecialShip designs:
+The DrunkardShip doesn't control it's behaviour well so it randomly turns\shoots\accelerates and teleports.
 
+The SpecialShip can copy the behaviour of other ships and it does so in a random manner. Every set number of rounds it chooses
+different strategy to copy.
 
 =============================
 =  Implementation details   =
 =============================
-The idea behind the implementation of the smart player was to always leave the board in an even state of parity.
-This would most of the times assure winning position for the smart player because the nim sum of even number of sticks
-is zero which is the losing state.
-Also i chose to start from the upper row of sticks
+In my design i chose to implement the SpaceShip class as an abstract class. This way most of the common functions dealing with
+ship's "under the hood" behaviour are implemented in a common super class.
+The only abstract method is the doAction because each ship has different in game behaviour so it has to be different for each
+inherited class (Space Ship).
+When each class is initialized it calls the reset method. This way I didn't have to duplicate code for resetting each of the
+SpaceShips' parameters.
+
+To implement the SpecialShip I had to place other SpaceShips' strategy implementations inside the SpaceShip class. This way i didn't
+have to duplicate large chunks of code. So each SpaceShip inherited class calls its respectively named method.
 
 
 =============================

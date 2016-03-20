@@ -1,4 +1,6 @@
-
+/**
+ * This class implemets the factory design pattern to create all the different SPaceShip objects.
+ */
 public class SpaceShipFactory {
     public static SpaceShip[] createSpaceShips(String[] args) {
         SpaceShip[] ships = new SpaceShip[args.length];
