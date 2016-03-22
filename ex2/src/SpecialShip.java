@@ -26,7 +26,7 @@ public class SpecialShip extends SpaceShip{
         Random rand = new Random();
 
         if(bahaviourCounter == 0) {
-            rand.setSeed(rand.nextInt()); // Set random seed for the case when multiple SpecialShips are created.
+            rand.setSeed(rand.nextLong()); // Set random seed for the case when multiple SpecialShips are created.
             bahaviourCounter = ROUNDS_KEEP_BEHAVIOUR;
             behaviour = rand.nextInt(3); // Gets random number for behaviour selection
         }

@@ -31,7 +31,7 @@ public class DrunkardShip extends SpaceShip{
             teleport();
 
         if(counter == 0){
-            rand.setSeed(rand.nextInt()); // Set random seed for the case when multiple DrunkardShips are created.
+            rand.setSeed(rand.nextLong()); // Set random seed for the case when multiple DrunkardShips are created.
             accelerate = rand.nextBoolean();
             shoot = rand.nextBoolean();
             teleport = rand.nextBoolean();
