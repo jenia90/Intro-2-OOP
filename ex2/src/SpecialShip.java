@@ -26,7 +26,8 @@ public class SpecialShip extends SpaceShip{
 
         if(bahaviourCounter == 0) {
             bahaviourCounter = ROUNDS_KEEP_BEHAVIOUR;
-            behaviour = rand.nextInt(2); // Gets random number for behaviour selection
+            behaviour = rand.nextInt(3); // Gets random number for behaviour selection
+
         }
 
         // This switch statement switches to the randomly chosen behaviour
@@ -43,5 +44,6 @@ public class SpecialShip extends SpaceShip{
         }
 
         bahaviourCounter--;
+
     }
 }

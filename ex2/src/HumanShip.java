@@ -7,16 +7,8 @@ import java.awt.*;
  */
 public class HumanShip extends SpaceShip{
 
-    private static boolean HUMANSHIP_INIT_ACCELERATION = false; // Constant
+    private static boolean HUMANSHIP_INIT_ACCELERATION = false; // Constant value for the initial acceleration.
 
-    /**
-     * HumanShip class constructor.
-     *
-     * Calls the reset() method of SpaceShip class to reset all parameters to initial state.
-     */
-    public HumanShip(){
-        reset();
-    }
     /**
      * Deals with the user input to control this ship.
      *

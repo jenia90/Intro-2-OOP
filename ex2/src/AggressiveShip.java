@@ -3,9 +3,6 @@
  */
 public class AggressiveShip extends SpaceShip{
 
-    public AggressiveShip(){
-        reset();
-    }
     /**
      * Does the actions of this ship for this round.
      * This is called once per round by the SpaceWars game driver.

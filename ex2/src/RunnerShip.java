@@ -2,10 +2,6 @@
  * This class implements the Runner space ship.
  */
 public class RunnerShip extends SpaceShip{
-
-    public RunnerShip(){
-        reset();
-    }
     /**
      * Does the actions of this ship for this round.
      * This is called once per round by the SpaceWars game driver.

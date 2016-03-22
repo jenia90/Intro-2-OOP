@@ -1,5 +1,4 @@
 import java.awt.Image;
-import java.util.concurrent.CopyOnWriteArraySet;
 
 import oop.ex2.*;
 
@@ -22,19 +21,25 @@ public abstract class SpaceShip{
     private static final int TELEPORT_ENERGY_COST = 140;
     private static final int SHIELD_ENERGY_COST = 3;
     private static final int GUN_COOL_DOWN_PERIOD = 7;
+    private static final int SHIELDED_COLLISION_BONUS = 18;
+    private static final int COLLISION_ENERGY_COST = 10;
+    private static final double MAX_TELEPORT_DISTANCE = 0.25;
+    private static final double MAX_TELEPORT_ANGLE = 0.23;
+    private static final double MIN_FIRING_ANGLE = 0.21;
+    private static final double MIN_BASHING_DISTANCE = 0.19;
 
 
     /**
-     * Constats for use in this and extended classes.
+     * Constants for use in this and extended classes.
      */
     protected static final int STRAIGHT_HEADING = 0;
     protected static final int LEFT_TURN = 1;
     protected static final int RIGHT_TURN = -1;
     protected static final boolean ENEMYSHIP_ACCELERATION = true;
 
+
     /**
-     * In game member variables.
-     * @param healthLevel
+     * In game variable
      */
     private int healthLevel;
     private int currentEnergyLevel;
@@ -42,6 +47,13 @@ public abstract class SpaceShip{
     private SpaceShipPhysics shipPhysics;
     private boolean shieldOn = false;
     private int gunCoolDown = 0;
+
+    /**
+     * Constructor for the SpaceShip class.
+     */
+    public SpaceShip(){
+        reset();
+    }
 
     /**
      * Updates gun cool down period.
@@ -75,8 +87,8 @@ public abstract class SpaceShip{
         }
 
         else {
-            maxEnergyLevel += 18;
-            currentEnergyLevel += 18;
+            maxEnergyLevel += SHIELDED_COLLISION_BONUS;
+            currentEnergyLevel += SHIELDED_COLLISION_BONUS;
         }
     }
 
@@ -86,7 +98,7 @@ public abstract class SpaceShip{
     private void updateNoShieldStats() {
         healthLevel--;
 
-        currentEnergyLevel -= 10;
+        currentEnergyLevel -= COLLISION_ENERGY_COST;
         if(currentEnergyLevel > maxEnergyLevel)
             maxEnergyLevel = currentEnergyLevel;
     }
@@ -230,7 +242,7 @@ public abstract class SpaceShip{
 
         pursuitShip(physics, angle);
 
-        if(distance <= 0.19)
+        if(distance <= MIN_BASHING_DISTANCE)
             shieldControl(true);
         else{
             shieldControl(false);
@@ -250,7 +262,7 @@ public abstract class SpaceShip{
 
         pursuitShip(getPhysics(), angle);
 
-        if(angle < 0.21)
+        if(angle < MIN_FIRING_ANGLE)
             fire(game);
 
         updateGunCoolDown();
@@ -267,12 +279,14 @@ public abstract class SpaceShip{
         double angle = getPhysics().angleTo(closest.getPhysics());
         double distance = getPhysics().distanceFrom(closest.getPhysics());
 
-        if(distance <= 0.25 && angle <= 0.23)
+        if(distance <= MAX_TELEPORT_DISTANCE && angle <= MAX_TELEPORT_ANGLE) {
             teleport();
+            angle = getPhysics().angleTo(closest.getPhysics());
+        }
 
         if(angle >= 0){
             physics.move(ENEMYSHIP_ACCELERATION, RIGHT_TURN);
-        } else if (angle < 0) {
+        } else {
             physics.move(ENEMYSHIP_ACCELERATION, LEFT_TURN);
         }
     }

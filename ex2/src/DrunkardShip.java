@@ -4,17 +4,20 @@ import java.util.Random;
  * This class implements the Drunkard ship.
  */
 public class DrunkardShip extends SpaceShip{
-    private static final int COUNTER_MAX = 24;
+    private static final int ROUND_COUNTER = 24;
 
     private int turnDirection;
     private int counter;
     private boolean accelerate;
 
+    /**
+     * DrunkardShip constructor.
+     */
     public DrunkardShip(){
         reset();
-        turnDirection = LEFT_TURN;
-        counter = 0;
+        turnDirection = STRAIGHT_HEADING;
         accelerate = false;
+        counter = 0;
     }
     /**
      * Does the actions of this ship for this round.
@@ -40,7 +43,7 @@ public class DrunkardShip extends SpaceShip{
                     break;
             }
 
-            counter = COUNTER_MAX;
+            counter = ROUND_COUNTER;
         }
 
         if(rand.nextBoolean())
