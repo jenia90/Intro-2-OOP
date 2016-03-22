@@ -1,25 +1,21 @@
+import oop.ex2.SpaceShipPhysics;
+
 import java.util.Random;
 
 /**
  * This class implements the Drunkard ship.
  */
 public class DrunkardShip extends SpaceShip{
-    private static final int ROUND_COUNTER = 24;
+
+    private static final int ROUND_COUNTER = 18;
 
     private int turnDirection;
     private int counter;
     private boolean accelerate;
+    private boolean shoot;
+    private boolean teleport;
+    private boolean pursuit;
 
-    /**
-     * DrunkardShip constructor.
-     */
-    public DrunkardShip(){
-        super();
-
-        turnDirection = STRAIGHT_HEADING;
-        accelerate = false;
-        counter = 0;
-    }
     /**
      * Does the actions of this ship for this round.
      * This is called once per round by the SpaceWars game driver.
@@ -32,6 +28,10 @@ public class DrunkardShip extends SpaceShip{
 
         if(counter == 0){
             accelerate = rand.nextBoolean();
+            shoot = rand.nextBoolean();
+            teleport = rand.nextBoolean();
+            pursuit = rand.nextBoolean();
+
             switch (rand.nextInt(3)){
                 case 0:
                     turnDirection = LEFT_TURN;
@@ -47,11 +47,19 @@ public class DrunkardShip extends SpaceShip{
             counter = ROUND_COUNTER;
         }
 
-        if(rand.nextBoolean())
+        if(shoot)
             fire(game);
 
-        if(rand.nextBoolean())
+        if(teleport)
             teleport();
+
+        if(pursuit) {
+            SpaceShip closest = game.getClosestShipTo(this); // gets the closest ship
+            SpaceShipPhysics physics = getPhysics();
+            double angle = getPhysics().angleTo(closest.getPhysics()); // gets the angle to the closest ship
+
+            pursuitShip(physics, angle);
+        }
 
         getPhysics().move(accelerate, turnDirection);
         updateGunCoolDown();
