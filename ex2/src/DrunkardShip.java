@@ -25,6 +25,8 @@ public class DrunkardShip extends SpaceShip{
     @Override
     public void doAction(SpaceWars game) {
         Random rand = new Random();
+        rand.setSeed(rand.nextInt()); // Set random seed for the case when multiple DrunkardShips are created.
+        shieldControl(false);
 
         if(counter == 0){
             accelerate = rand.nextBoolean();
@@ -57,11 +59,12 @@ public class DrunkardShip extends SpaceShip{
             SpaceShip closest = game.getClosestShipTo(this); // gets the closest ship
             SpaceShipPhysics physics = getPhysics();
             double angle = getPhysics().angleTo(closest.getPhysics()); // gets the angle to the closest ship
+            shieldControl(true);
 
             pursuitShip(physics, angle);
-        }
+        } else
+            getPhysics().move(accelerate, turnDirection);
 
-        getPhysics().move(accelerate, turnDirection);
         updateGunCoolDown();
         chargeEnergy();
         counter--;
