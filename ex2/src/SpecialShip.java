@@ -24,12 +24,11 @@ public class SpecialShip extends SpaceShip{
     @Override
     public void doAction(SpaceWars game) {
         Random rand = new Random();
-        rand.setSeed(rand.nextInt()); // Set random seed for the case when multiple SpecialShips are created.
 
         if(bahaviourCounter == 0) {
+            rand.setSeed(rand.nextInt()); // Set random seed for the case when multiple SpecialShips are created.
             bahaviourCounter = ROUNDS_KEEP_BEHAVIOUR;
             behaviour = rand.nextInt(3); // Gets random number for behaviour selection
-
         }
 
         // This switch statement switches to the randomly chosen behaviour

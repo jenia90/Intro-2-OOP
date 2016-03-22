@@ -25,13 +25,13 @@ public class DrunkardShip extends SpaceShip{
     @Override
     public void doAction(SpaceWars game) {
         Random rand = new Random();
-        rand.setSeed(rand.nextInt()); // Set random seed for the case when multiple DrunkardShips are created.
         shieldControl(false);
 
         if(teleport)
             teleport();
 
         if(counter == 0){
+            rand.setSeed(rand.nextInt()); // Set random seed for the case when multiple DrunkardShips are created.
             accelerate = rand.nextBoolean();
             shoot = rand.nextBoolean();
             teleport = rand.nextBoolean();
