@@ -37,9 +37,9 @@ different strategy to copy.
 =============================
 =  Implementation details   =
 =============================
-In my design i chose to implement the SpaceShip class as an abstract class. This way most of the common functions dealing with
-ship's "under the hood" behaviour are implemented in a common super class.
-The only abstract method is the doAction because each ship has different in game behaviour so it has to be different for each
+In my design I chose to implement the SpaceShip class as an abstract class. This way most of the common functions dealing with
+ship's "under-the-hood" behaviour are implemented in the SpcaeShip class.
+The only abstract method is the doAction() because each ship has different in-game behaviour so it has to be different for each
 inherited class (Space Ship).
 When each class is initialized it calls the reset method. This way I didn't have to duplicate code for resetting each of the
 SpaceShips' parameters.
