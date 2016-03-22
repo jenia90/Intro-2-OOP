@@ -28,6 +28,9 @@ public class DrunkardShip extends SpaceShip{
         rand.setSeed(rand.nextInt()); // Set random seed for the case when multiple DrunkardShips are created.
         shieldControl(false);
 
+        if(teleport)
+            teleport();
+
         if(counter == 0){
             accelerate = rand.nextBoolean();
             shoot = rand.nextBoolean();
@@ -49,12 +52,6 @@ public class DrunkardShip extends SpaceShip{
             counter = ROUND_COUNTER;
         }
 
-        if(shoot)
-            fire(game);
-
-        if(teleport)
-            teleport();
-
         if(pursuit) {
             SpaceShip closest = game.getClosestShipTo(this); // gets the closest ship
             SpaceShipPhysics physics = getPhysics();
@@ -64,6 +61,9 @@ public class DrunkardShip extends SpaceShip{
             pursuitShip(physics, angle);
         } else
             getPhysics().move(accelerate, turnDirection);
+
+        if(shoot)
+            fire(game);
 
         updateGunCoolDown();
         chargeEnergy();

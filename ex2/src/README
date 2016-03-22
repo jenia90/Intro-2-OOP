@@ -29,7 +29,7 @@ The main design of the behaviour of space ships was done according to the course
 Further explanations and considerations are explained in the implementation details part.
 
 Few words about the DrunkardShip and the SpecialShip designs:
-The DrunkardShip doesn't control it's behaviour well so it randomly turns\shoots\accelerates and teleports.
+The DrunkardShip doesn't control it's behaviour well so it randomly turns, shoots, accelerates, teleports and activates it's shield.
 
 The SpecialShip can copy the behaviour of other ships and it does so in a random manner. Every set number of rounds it chooses
 different strategy to copy.
