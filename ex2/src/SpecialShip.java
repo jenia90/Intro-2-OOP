@@ -12,7 +12,8 @@ public class SpecialShip extends SpaceShip{
     private int behaviour;
 
     public SpecialShip(){
-        reset();
+        super();
+
         bahaviourCounter = 0;
     }
     /**
@@ -23,6 +24,7 @@ public class SpecialShip extends SpaceShip{
     @Override
     public void doAction(SpaceWars game) {
         Random rand = new Random();
+        rand.setSeed(rand.nextInt()); // Set random seed for the case when multiple SpecialShips are created.
 
         if(bahaviourCounter == 0) {
             bahaviourCounter = ROUNDS_KEEP_BEHAVIOUR;

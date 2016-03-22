@@ -14,7 +14,8 @@ public class DrunkardShip extends SpaceShip{
      * DrunkardShip constructor.
      */
     public DrunkardShip(){
-        reset();
+        super();
+
         turnDirection = STRAIGHT_HEADING;
         accelerate = false;
         counter = 0;
