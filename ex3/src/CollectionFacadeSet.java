@@ -1,9 +1,10 @@
 import java.util.Collection;
+import java.util.Iterator;
 
 /**
  * Created by jenia on 22/03/2016.
  */
-public class CollectionFacadeSet implements SimpleSet {
+public class CollectionFacadeSet implements SimpleSet, Iterable {
 
     private Collection<String> collection;
 
@@ -18,7 +19,9 @@ public class CollectionFacadeSet implements SimpleSet {
      */
     @Override
     public boolean add(String newValue) {
-        return collection.add(newValue);
+        if(!contains(newValue))
+            return collection.add(newValue);
+        return false;
     }
 
     /**
@@ -49,5 +52,10 @@ public class CollectionFacadeSet implements SimpleSet {
     @Override
     public int size() {
         return collection.size();
+    }
+
+    @Override
+    public Iterator iterator() {
+        return collection.iterator();
     }
 }

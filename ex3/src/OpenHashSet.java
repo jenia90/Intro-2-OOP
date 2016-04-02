@@ -14,7 +14,7 @@ public class OpenHashSet extends SimpleHashSet{
      * Default constructor.
      */
     public OpenHashSet(){
-        capacityMinusOne = INITIAL_CAPACITY + 1;
+        capacityMinusOne = INITIAL_CAPACITY - 1;
         collections = new CollectionFacadeSet[INITIAL_CAPACITY];
     }
 
@@ -47,11 +47,11 @@ public class OpenHashSet extends SimpleHashSet{
     public boolean add(String newValue) {
         int index = getHashedIndex(newValue);
 
-        if(collections[index] != null && !collections[index].contains(newValue)) {
+        if(collections[index] == null) {
             collections[index] = new CollectionFacadeSet(new LinkedList<String>());
             return collections[index].add(newValue);
         }
-        return false;
+        return collections[index].add(newValue);
     }
 
     /**
@@ -61,6 +61,9 @@ public class OpenHashSet extends SimpleHashSet{
      */
     private int getHashedIndex(String val){
         return val.hashCode() & capacityMinusOne;
+    }
+    
+    private void rehash(){
     }
 
     public int capacity(){
