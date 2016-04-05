@@ -19,9 +19,7 @@ public class CollectionFacadeSet implements SimpleSet, Iterable {
      */
     @Override
     public boolean add(String newValue) {
-        if(!contains(newValue))
-            return collection.add(newValue);
-        return false;
+        return collection.add(newValue);
     }
 
     /**
@@ -54,8 +52,12 @@ public class CollectionFacadeSet implements SimpleSet, Iterable {
         return collection.size();
     }
 
+    /**
+     * Returns the LinkedList iterator();
+     * @return
+     */
     @Override
-    public Iterator iterator() {
+    public Iterator<String> iterator() {
         return collection.iterator();
     }
 }

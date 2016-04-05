@@ -1,21 +1,15 @@
+import java.util.Iterator;
 import java.util.LinkedList;
 
-/**
- * Created by jenia on 22/03/2016.
- */
 public class OpenHashSet extends SimpleHashSet{
 
     private CollectionFacadeSet[] collections;
-    private int numElements = 0;
-    // private CollectionFacadeSet collection = new CollectionFacadeSet(list);
-    private float upperLoadFactor = 0;
-    private float lowerLoadFactor = 0;
     /**
      * Default constructor.
      */
     public OpenHashSet(){
-        capacityMinusOne = INITIAL_CAPACITY - 1;
-        collections = new CollectionFacadeSet[INITIAL_CAPACITY];
+        super();
+        initCollections();
     }
 
     /**
@@ -24,8 +18,8 @@ public class OpenHashSet extends SimpleHashSet{
      * @param lowerLoadFactor The lower load factor of the hash table.
      */
     public OpenHashSet(float upperLoadFactor, float lowerLoadFactor){
-        this.upperLoadFactor = upperLoadFactor;
-        this.lowerLoadFactor = lowerLoadFactor;
+        super(lowerLoadFactor, upperLoadFactor);
+        initCollections();
     }
 
     /**
@@ -34,7 +28,12 @@ public class OpenHashSet extends SimpleHashSet{
      * @param data Values to add to the set.
      */
     public OpenHashSet(String[] data){
+        super(data);
+        initCollections();
+    }
 
+    private void initCollections(){
+        collections = new CollectionFacadeSet[INITIAL_CAPACITY];
     }
 
     /**
@@ -45,28 +44,77 @@ public class OpenHashSet extends SimpleHashSet{
      */
     @Override
     public boolean add(String newValue) {
-        int index = getHashedIndex(newValue);
+        if(contains(newValue))
+            return false;
 
-        if(collections[index] == null) {
+        prepForAdd();
+
+        int index = indexOf(newValue);
+
+        if(collections[index] == null)
             collections[index] = new CollectionFacadeSet(new LinkedList<String>());
-            return collections[index].add(newValue);
-        }
-        return collections[index].add(newValue);
+
+        boolean addSuccess = collections[index].add(newValue);
+        if(addSuccess)
+            numElements++;
+
+        return addSuccess;
     }
 
     /**
-     * Gets hashed index of current item.
-     * @param val item calculate index for.
-     * @return Hashed index
+     * Remove the input element from the set.
+     *
+     * @param toDelete Value to delete
+     * @return True iff toDelete is found and deleted
      */
-    private int getHashedIndex(String val){
-        return val.hashCode() & capacityMinusOne;
-    }
-    
-    private void rehash(){
+    @Override
+    public boolean delete(String toDelete) {
+        if(!contains(toDelete))
+            return false;
+
+        postDeleteCheckup();
+
+        int index = indexOf(toDelete);
+        CollectionFacadeSet collection = collections[index];
+        boolean isRemoved = collection.delete(toDelete);
+        numElements--;
+
+        if(collection.size() == 0)
+            collections[index] = null;
+
+        return isRemoved;
     }
 
-    public int capacity(){
-        return capacityMinusOne + 1;
+    /**
+     * Checks if HashSet contains the String.
+     * @param searchVal Value to search for
+     * @return true if contains; false otherwise.
+     */
+    @Override
+    public boolean contains(String searchVal){
+        CollectionFacadeSet collection = collections[indexOf(searchVal)];
+
+        return collection != null && collection.contains(searchVal);
+    }
+
+    /**
+     * Rehashes table for when the capacity is changed
+     * @param newCapacity new HashSet capacity
+     */
+    @Override
+    protected void rehashTable(int newCapacity){
+        CollectionFacadeSet[] oldCollections = collections;
+        collections = new CollectionFacadeSet[newCapacity];
+        capacityMinusOne = newCapacity - 1;
+
+        for (CollectionFacadeSet col : oldCollections) {
+            if(col != null){
+                Iterator<String> it = col.iterator();
+
+                while (it.hasNext()){
+                    add(it.next());
+                }
+            }
+        }
     }
 }
