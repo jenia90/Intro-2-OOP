@@ -9,7 +9,6 @@ public class OpenHashSet extends SimpleHashSet{
      */
     public OpenHashSet(){
         super();
-        initCollections();
     }
 
     /**
@@ -19,7 +18,6 @@ public class OpenHashSet extends SimpleHashSet{
      */
     public OpenHashSet(float upperLoadFactor, float lowerLoadFactor){
         super(lowerLoadFactor, upperLoadFactor);
-        initCollections();
     }
 
     /**
@@ -29,10 +27,10 @@ public class OpenHashSet extends SimpleHashSet{
      */
     public OpenHashSet(String[] data){
         super(data);
-        initCollections();
     }
 
-    private void initCollections(){
+    @Override
+    public void initCollection(){
         collections = new CollectionFacadeSet[INITIAL_CAPACITY];
     }
 

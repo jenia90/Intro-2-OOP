@@ -6,12 +6,14 @@ import java.util.Objects;
  */
 public abstract class SimpleHashSet implements SimpleSet {
 
-    protected int capacityMinusOne;
-    protected int numElements = 0;
     protected final static int INITIAL_CAPACITY = 16;
 
     private static final float DEFAULT_UPPER_LOADFACTOR = 0.75f;
     private static final float DEFAULT_LOWER_LOADFACTOR = 0.25f;
+
+    protected int capacityMinusOne;
+    protected int numElements = 0;
+
     protected float lowerLoadFactor;
     protected float upperLoadFactor;
 
@@ -19,6 +21,8 @@ public abstract class SimpleHashSet implements SimpleSet {
         this.lowerLoadFactor = lowerLoadFactor;
         this.upperLoadFactor = upperLoadFactor;
         capacityMinusOne = INITIAL_CAPACITY - 1;
+
+        initCollection();
     }
 
     public SimpleHashSet(){
@@ -33,6 +37,8 @@ public abstract class SimpleHashSet implements SimpleSet {
             add(str);
         }
     }
+
+    protected abstract void initCollection();
 
     /**
      * Add a specified element to the set if it's not already in it.
@@ -94,7 +100,7 @@ public abstract class SimpleHashSet implements SimpleSet {
      * @return Hashed index
      */
     protected int indexOf(String val, int i){
-        return (val.hashCode() + i * (i + 1) / 2) & capacityMinusOne;
+        return (val.hashCode() + i*i/2 + i/2) & capacityMinusOne;
     }
 
     protected void prepForAdd() {

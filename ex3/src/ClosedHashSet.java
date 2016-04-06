@@ -18,7 +18,8 @@ public class ClosedHashSet extends SimpleHashSet {
         super(data);
     }
 
-    private void initCollection(){
+    @Override
+    public void initCollection(){
         collection = new String[INITIAL_CAPACITY];
         isOccupied = new boolean[INITIAL_CAPACITY];
     }
@@ -60,7 +61,6 @@ public class ClosedHashSet extends SimpleHashSet {
     public boolean contains(String searchVal) {
         for (int i = 0; i < capacity(); i++) {
             int index = indexOf(searchVal, i);
-
             if(searchVal.equals(collection[index]))
                 return true;
         }
