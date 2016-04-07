@@ -2,12 +2,17 @@ import java.util.Collection;
 import java.util.Iterator;
 
 /**
- * Created by jenia on 22/03/2016.
+ * Simple wrapper classes for java built in collection classes.
  */
 public class CollectionFacadeSet implements SimpleSet {
 
     private Collection<String> collection;
 
+    /**
+     * Constructor which receives a single java.util.Collection object
+     * and assigns it to the collection field.
+     * @param collection Generic Collection object.
+     */
     public CollectionFacadeSet(Collection<String> collection){
         this.collection = collection;
     }

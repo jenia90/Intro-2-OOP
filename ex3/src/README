@@ -1,0 +1,75 @@
+jenia90
+
+
+
+
+=============================
+=      File description     =
+=============================
+
+SimpleHashSet.java - A simple asbtract hashset class implementation which will
+                        be extended by other collection classes.
+
+OpenHashSet.java - A HashSet implemented by using the open hashing approach
+
+ClosedHashSet.java - A HashSet implemented by using the closed hashing approach
+
+CollectionFacadeSet.java - A wrapper class for generic java collection classes.
+
+SimpleSetPerformanceAnalyzer.java - Simple performance analyzer class which analyzes
+                        the time it takes different SimpleSet classes to perform certain
+                        tasks.
+
+README - this file.
+
+RESULTS - includes runtime results.
+
+=============================
+=          Design           =
+=============================
+
+
+
+=============================
+=  Implementation details   =
+=============================
+
+OpenHashSet:
+The open hash set hold an array of CollectionFacadeSets where each cell in the array holds a LinkedList.
+When an item is added to the set, the set uses indexOf() method to calculate the index for the item and
+then adds it to the linked list placed in that cell, in case there is no linked list object in the cell
+a new one is created.
+Every time an item is added or deleted the class checks if the after the operation the loadfactor exceeds
+the set limits. If it does, the rehash method is called with double or half capacity (add or delete) and
+the table is rehashed to the new one.
+
+ClosedHashSet:
+This set uses the closed hashing approach where index for every new item is found using quadratic probing
+of it's hashcode and a secondary generated index. So in case when two items have the same hashCode the
+secondary index will resolve the issue and help find a new cell in the array.
+The set itself is based on String array and a secondary array of boolean values which helps it determine
+if the cell in question is occupied or empty.
+Each time an item is added or deleted this class similarly to the OpenHashSet calls special methods which
+check if current loadfactors exceed the limits and rehashes the table into a bigger or smaller one.
+For instance, if a an item is to be deleted the delete() method determines if the item is in the set
+if yes it finds its index using the quadratic probing (in case the first found index is null it continues
+the search) and then the item is replaced with null and the corresponding index in the isOccupied array is
+replaced with a false to indicate the cell is free for use in the future.
+
+=============================
+=    Answers to questions   =
+=============================
+
+The runtime results discussed are located inside the RESULTS file
+
+Runtime analysis:
+1.  OpenHashSet is faster at faster at adding items which have the same hash code because each add operation
+    is performed in constant time because the items are simple added to the end of linkedlist.
+    On the other hand, the closed approach is faster at adding items with different hash codes because it
+    doesn't have to go over many secondary indexes and the items are simply put in an array instead of
+    checked if there needs to be created a new object in that cell and etc.
+    Java's TreeSet and HashSet are the most efficient at adding items with the same hash code
+    but the tree set is less efficient even than my classes in adding items with different hash codes.
+
+2.  I was surprised how slow java's LinkedList at performing different operations.
+3.

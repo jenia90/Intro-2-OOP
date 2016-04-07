@@ -1,22 +1,26 @@
 import java.util.Iterator;
 import java.util.Objects;
 
-/**
- * Created by jenia on 22/03/2016.
- */
+
 public abstract class SimpleHashSet implements SimpleSet {
 
-    protected final static int INITIAL_CAPACITY = 16;
-
+    /* constants */
     private static final float DEFAULT_UPPER_LOADFACTOR = 0.75f;
     private static final float DEFAULT_LOWER_LOADFACTOR = 0.25f;
+    protected static final int INITIAL_CAPACITY = 16;
 
+    /* class fields */
     protected int capacityMinusOne;
     protected int numElements = 0;
 
     protected float lowerLoadFactor;
     protected float upperLoadFactor;
 
+    /**
+     * Constructs a new, empty table with the specified load factors, and the default initial capacity (16).
+     * @param upperLoadFactor The upper load factor of the hash table.
+     * @param lowerLoadFactor The lower load factor of the hash table.
+     */
     public SimpleHashSet(float lowerLoadFactor, float upperLoadFactor){
         this.lowerLoadFactor = lowerLoadFactor;
         this.upperLoadFactor = upperLoadFactor;
@@ -25,11 +29,19 @@ public abstract class SimpleHashSet implements SimpleSet {
         initCollection();
     }
 
+    /**
+     * Default constructor
+     */
     public SimpleHashSet(){
         this(DEFAULT_LOWER_LOADFACTOR, DEFAULT_UPPER_LOADFACTOR);
 
     }
 
+    /**
+     * Data constructor - builds the hash set by adding the elements one by one. Duplicate values should be ignored.
+     * The new table has the default values of initial capacity (16), upper load factor (0.75), and lower load factor (0.25).
+     * @param data Values to add to the set.
+     */
     public SimpleHashSet(String[] data){
         this(DEFAULT_LOWER_LOADFACTOR, DEFAULT_UPPER_LOADFACTOR);
 
@@ -38,6 +50,9 @@ public abstract class SimpleHashSet implements SimpleSet {
         }
     }
 
+    /**
+     * Initializes all the needed parameters for a collection.
+     */
     protected abstract void initCollection();
 
     /**
@@ -75,6 +90,10 @@ public abstract class SimpleHashSet implements SimpleSet {
         return numElements;
     }
 
+    /**
+     * Returns capacity of the collection.
+     * @return capacity of the collection
+     */
     public int capacity(){
         return capacityMinusOne + 1;
     }
@@ -103,19 +122,21 @@ public abstract class SimpleHashSet implements SimpleSet {
         return (value.hashCode() + i * (i + 1) / 2) & capacityMinusOne;
     }
 
-    protected boolean isRehashNeeded() {
-        numElements++;
-        float loadFactor = (size()) / capacity();
+    /**
+     * Checks if rehashing is needed prior to adding an item.
+     */
+    protected void isRehashNeeded() {
+        float loadFactor = (size() + 1) / (float)capacity();
 
-        if(loadFactor > upperLoadFactor) {
-            return true;
-        }
-        return false;
+        if(loadFactor > upperLoadFactor)
+            rehashTable(capacity() * 2);
     }
 
+    /**
+     * Checks if table needs to be rehashed after deleting an item from the collection
+     */
     protected void postDeleteCheckup() {
-        numElements--;
-        float loadFactor = (size()) / capacity();
+        float loadFactor = (size() - 1) / (float)capacity();
 
         if(loadFactor < lowerLoadFactor && capacity() > 1)
             rehashTable(capacity() / 2);

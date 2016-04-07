@@ -2,48 +2,48 @@
 #You should replace each X with the corresponding value
 
 #These values correspond to the time it takes (in ms) to insert data1 to all data structures
-OpenHashSet_AddData1 = X
-ClosedHashSet_AddData1 = X
-TreeSet_AddData1 = X
-LinkedList_AddData1 = X
-HashSet_AddData1 = X
+OpenHashSet_AddData1 = 111204
+ClosedHashSet_AddData1 = 156462
+TreeSet_AddData1 = 39
+LinkedList_AddData1 = 23764
+HashSet_AddData1 = 31
 
 #These values correspond to the time it takes (in ms) to insert data2 to all data structures
-OpenHashSet_AddData2 = X
-ClosedHashSet_AddData2 = X
-TreeSet_AddData2 = X
-LinkedList_AddData2 = X
-HashSet_AddData2 = X
+OpenHashSet_AddData2 = 33
+ClosedHashSet_AddData2 = 20
+TreeSet_AddData2 = 42
+LinkedList_AddData2 = 19633
+HashSet_AddData2 = 5
 
 #These values correspond to the time it takes (in ns) to check if "hi" is contained in
 #the data structures initialized with data1
-OpenHashSet_Contains_hi1 = X
-ClosedHashSet_Contains_hi1 = X
-TreeSet_Contains_hi1 = X
-LinkedList_Contains_hi1 = X
-HashSet_Contains_hi1 = X
+OpenHashSet_Contains_hi1 = 6
+ClosedHashSet_Contains_hi1 = 13
+TreeSet_Contains_hi1 = 88
+LinkedList_Contains_hi1 = 449910
+HashSet_Contains_hi1 = 6
 
 #These values correspond to the time it takes (in ns) to check if "-13170890158" is contained in
 #the data structures initialized with data1
-OpenHashSet_Contains_negative = X
-ClosedHashSet_Contains_negative = X
-TreeSet_Contains_negative = X
-LinkedList_Contains_negative = X
-HashSet_Contains_negative = X
+OpenHashSet_Contains_negative = 512343
+ClosedHashSet_Contains_negative = 1121819
+TreeSet_Contains_negative = 129
+LinkedList_Contains_negative = 518828
+HashSet_Contains_negative = 21
 
 #These values correspond to the time it takes (in ns) to check if "23" is contained in
 #the data structures initialized with data2
-OpenHashSet_Contains_23 = X
-ClosedHashSet_Contains_23 = X
-TreeSet_Contains_23 = X
-LinkedList_Contains_23 = X
-HashSet_Contains_23 = X
+OpenHashSet_Contains_23 = 11
+ClosedHashSet_Contains_23 = 19
+TreeSet_Contains_23 = 31
+LinkedList_Contains_23 = 110
+HashSet_Contains_23 = 29
 
 #These values correspond to the time it takes (in ns) to check if "hi" is contained in
 #the data structures initialized with data2
-OpenHashSet_Contains_hi2 = X
-ClosedHashSet_Contains_hi2 = X
-TreeSet_Contains_hi2 = X
-LinkedList_Contains_hi2 = X
-HashSet_Contains_hi2 = X
+OpenHashSet_Contains_hi2 = 7
+ClosedHashSet_Contains_hi2 = 21
+TreeSet_Contains_hi2 = 70
+LinkedList_Contains_hi2 = 357781
+HashSet_Contains_hi2 = 7
 

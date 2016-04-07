@@ -29,6 +29,9 @@ public class OpenHashSet extends SimpleHashSet{
         super(data);
     }
 
+    /**
+     * Initializes all the needed parameters for a collection.
+     */
     @Override
     public void initCollection(){
         collections = new CollectionFacadeSet[INITIAL_CAPACITY];
@@ -45,19 +48,21 @@ public class OpenHashSet extends SimpleHashSet{
         if(contains(newValue))
             return false;
 
+        // performs rehashing of the table when needed.
+        isRehashNeeded();
 
-        if(isRehashNeeded()){
-            rehashTable(capacity() * 2);
-        }
-
+        // gets the index for the new item.
         int index = indexOf(newValue);
 
+        // checks if the cell is null, if yes creates a new LinkedList<> object
+        // inside.
         if(collections[index] == null)
             collections[index] = new CollectionFacadeSet(new LinkedList<String>());
 
+        // gets the addition result.
         boolean addSuccess = collections[index].add(newValue);
-        /*if(addSuccess)
-            numElements++;*/
+        if(addSuccess)
+            numElements++; // if successful increases size.
 
         return addSuccess;
     }
@@ -73,13 +78,20 @@ public class OpenHashSet extends SimpleHashSet{
         if(!contains(toDelete))
             return false;
 
+        // checks if rehashing is needed
         postDeleteCheckup();
 
+        // gets the index of the item in question.
         int index = indexOf(toDelete);
+
+        // gets the collection where the item is located
         CollectionFacadeSet collection = collections[index];
+
+        // calls the remove() method on that collection
         boolean isRemoved = collection.delete(toDelete);
+        numElements--; // decrease size.
 
-
+        // null the cell if the collection there is empty.
         if(collection.size() == 0)
             collections[index] = null;
 
@@ -104,12 +116,13 @@ public class OpenHashSet extends SimpleHashSet{
      */
     @Override
     protected void rehashTable(int newCapacity){
-        //int size = numElements;
+        // backup the old collections and create new once.
         CollectionFacadeSet[] oldCollections = collections;
         collections = new CollectionFacadeSet[newCapacity];
         capacityMinusOne = newCapacity - 1;
         numElements = 0;
 
+        // add items from old collections to the new one.
         for (CollectionFacadeSet col : oldCollections) {
             if(col != null){
                 Iterator<String> it = col.iterator();
