@@ -4,7 +4,7 @@ import java.util.Iterator;
 /**
  * Created by jenia on 22/03/2016.
  */
-public class CollectionFacadeSet implements SimpleSet, Iterable {
+public class CollectionFacadeSet implements SimpleSet {
 
     private Collection<String> collection;
 
@@ -19,7 +19,7 @@ public class CollectionFacadeSet implements SimpleSet, Iterable {
      */
     @Override
     public boolean add(String newValue) {
-        return collection.add(newValue);
+        return !contains(newValue) && collection.add(newValue);
     }
 
     /**
@@ -56,7 +56,6 @@ public class CollectionFacadeSet implements SimpleSet, Iterable {
      * Returns the LinkedList iterator();
      * @return
      */
-    @Override
     public Iterator<String> iterator() {
         return collection.iterator();
     }

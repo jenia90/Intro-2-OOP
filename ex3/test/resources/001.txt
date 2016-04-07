@@ -1,0 +1,1 @@
+# simple creation of an empty set with the defualt initial capacity and load factors

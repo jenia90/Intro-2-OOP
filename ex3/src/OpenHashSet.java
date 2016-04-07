@@ -45,7 +45,10 @@ public class OpenHashSet extends SimpleHashSet{
         if(contains(newValue))
             return false;
 
-        prepForAdd();
+
+        if(isRehashNeeded()){
+            rehashTable(capacity() * 2);
+        }
 
         int index = indexOf(newValue);
 
@@ -53,8 +56,8 @@ public class OpenHashSet extends SimpleHashSet{
             collections[index] = new CollectionFacadeSet(new LinkedList<String>());
 
         boolean addSuccess = collections[index].add(newValue);
-        if(addSuccess)
-            numElements++;
+        /*if(addSuccess)
+            numElements++;*/
 
         return addSuccess;
     }
@@ -75,7 +78,7 @@ public class OpenHashSet extends SimpleHashSet{
         int index = indexOf(toDelete);
         CollectionFacadeSet collection = collections[index];
         boolean isRemoved = collection.delete(toDelete);
-        numElements--;
+
 
         if(collection.size() == 0)
             collections[index] = null;
@@ -101,9 +104,11 @@ public class OpenHashSet extends SimpleHashSet{
      */
     @Override
     protected void rehashTable(int newCapacity){
+        //int size = numElements;
         CollectionFacadeSet[] oldCollections = collections;
         collections = new CollectionFacadeSet[newCapacity];
         capacityMinusOne = newCapacity - 1;
+        numElements = 0;
 
         for (CollectionFacadeSet col : oldCollections) {
             if(col != null){

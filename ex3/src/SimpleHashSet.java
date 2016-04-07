@@ -31,7 +31,7 @@ public abstract class SimpleHashSet implements SimpleSet {
     }
 
     public SimpleHashSet(String[] data){
-        this();
+        this(DEFAULT_LOWER_LOADFACTOR, DEFAULT_UPPER_LOADFACTOR);
 
         for (String str : data){
             add(str);
@@ -75,45 +75,49 @@ public abstract class SimpleHashSet implements SimpleSet {
         return numElements;
     }
 
+    public int capacity(){
+        return capacityMinusOne + 1;
+    }
+
     /**
      * Rehashes table for when the capacity is changed
      * @param newCapacity new HashSet capacity
      */
     protected abstract void rehashTable(int newCapacity);
 
-    public int capacity(){
-        return capacityMinusOne + 1;
-    }
-
     /**
      * Gets index of an item.
-     * @param val item to calculate index for.
+     * @param value item to calculate index for.
      * @return Hashed index
      */
-    protected int indexOf(String val){
-        return indexOf(val, 0);
+    protected int indexOf(String value){
+        return indexOf(value, 0);
     }
     /**
      * Gets index of an item.
-     * @param val item to calculate index for.
+     * @param value item to calculate index for.
      * @param i secondary index used in quadratic probing.
      * @return Hashed index
      */
-    protected int indexOf(String val, int i){
-        return (val.hashCode() + i*i/2 + i/2) & capacityMinusOne;
+    protected int indexOf(String value, int i){
+        return (value.hashCode() + i * (i + 1) / 2) & capacityMinusOne;
     }
 
-    protected void prepForAdd() {
-        float loadFactor = (numElements + 1) / capacity();
+    protected boolean isRehashNeeded() {
+        numElements++;
+        float loadFactor = (size()) / capacity();
 
-        if(loadFactor > upperLoadFactor)
-            rehashTable(capacity() * 2);
+        if(loadFactor > upperLoadFactor) {
+            return true;
+        }
+        return false;
     }
 
     protected void postDeleteCheckup() {
-        float loadFactor = (size() - 1) / capacity();
+        numElements--;
+        float loadFactor = (size()) / capacity();
 
-        if(loadFactor < lowerLoadFactor && capacity() >  1)
+        if(loadFactor < lowerLoadFactor && capacity() > 1)
             rehashTable(capacity() / 2);
     }
 }
