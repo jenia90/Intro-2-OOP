@@ -72,4 +72,3 @@ Runtime analysis:
     but the tree set is less efficient even than my classes in adding items with different hash codes.
 
 2.  I was surprised how slow java's LinkedList at performing different operations.
-3.
