@@ -1,0 +1,39 @@
+﻿AVL Ex4 Tester, by Ben Asaf, ben.asaf@mail.huji.ac.il
+
+
+To setup: 
+
+1) Place all the content inside the ex4 package folder, oop.ex4.data_structures.  NOTE: Just don't get confused when you submit files alright? u iz promise?
+2) Set the path for the "tests" folder where all the text files with the commands are. The default path is "src\oop\ex4\data_structures\tests\".
+	If you wish to set it to another path, you have 2 options:
+	a) The tester will ask you for input for the path to the tests folder in-case the default path was not found.
+	b) Change the 'DEFAULT_PATH" constant String variable inside the tester file, FromFilesTester.java.
+
+3) Tree print functionality. In-order to enable this feature I had to use Reflections which provides a way to gain access to variables/classes etc by name.
+	For the printing to work all you have to do is: FILL IN THE FOLLOWING DETAILS INTO THE VARIABLES. THOSE VARIABLES ARE LOCATED IN THE MAIN FILE, "FromFilesTester"
+	I SHIT YOU NOT, IT WILL NOT WORK IF YOU DON'T DO IT.
+	
+	Those are the variables that you need to change:
+
+		private static final String TREE_ROOT_VARIABLE_NAME = "rootTree";  // What is the name of the variable that holds the root tree?
+		private static final String ROOT_OF_TREE_VARIABLE_LOCATION = "Tree";  // In what class is the variable declared? Father of AvlTree? in AvlTree?
+		// Node of the tree related: (Question are related to inside that Node class you are using):
+		private static final String NODE_CLASS_NAME = "TreeNode";  // Name of the class you are using for the Nodes in the tree
+		private static final String GET_LEFT_VARIABLE_NAME = "left";  // Name of the variable you are using to to hold left node
+		private static final String GET_RIGHT_VARIABLE_NAME = "right";  // Name of the variable you are using to to hold right node
+		private static final String GET_VALUE_VARIABLE_NAME = "value";  // Name of the variable you are using to to hold the value
+
+
+		It is self explanatory: first variable, AKA "TREE_ROOT_VARIABLE_NAME" is the name of the variable that holds the root of the tree. in my case it was "rootTree" and it was located in a class I created called "Tree".
+		The others are related to the Node: What is the class name of the Node you are using? I called it "TreeNode". rest are you responsibility.
+
+	4) omg we are done! lets get excited.
+
+
+Now comes the fun part, among the inputs, or "tests", in the "tests" folder, there are tests that I created, some were created by other people that decided to share and the rest were given by the OOP Staff.
+You can basically just run it or create your own by looking in the "Commands" file included or just by watching the tests file themselves. 
+
+Happy debugging,
+Ben.
+
+bye.
