@@ -21,13 +21,13 @@ public class FromFilesTester {
     ////////////////////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////// YOU CAN EDIT STUFF IN-HERE: /////////////////////////////////////////
     // Path related:
-    private static final String DEFAULT_PATH = "src\\oop\\ex4\\data_structures\\tests\\";   // DEFAULT PATH
+    private static final String DEFAULT_PATH = "src\\data_structures\\oop.ex4.data_structures\\tests\\";   // DEFAULT PATH
     /////////// PRINT TREE RELATED:
     // ROOT OF TREE RELATED:
     private static final String TREE_ROOT_VARIABLE_NAME = "rootNode"; // What is the name of the variable that holds the root tree?
     private static final String ROOT_OF_TREE_VARIABLE_LOCATION = "BasicTree";  // In what class is the variable declared? Father of AvlTree? in AvlTree?
     // NODE OF TREE RELATED:
-    private static final String NODE_CLASS_NAME = "Node";  // Name of the class you are using for the Nodes in the tree
+    private static final String NODE_CLASS_NAME = "AvlTreeNode";  // Name of the class you are using for the Nodes in the tree
     private static final String GET_LEFT_VARIABLE_NAME = "left";  // Name of the variable you are using to to hold left node
     private static final String GET_RIGHT_VARIABLE_NAME = "right";  // Name of the variable you are using to to hold right node
     private static final String GET_VALUE_VARIABLE_NAME = "value";  // Name of the variable you are using to to hold the value

@@ -65,7 +65,7 @@ public class TreePrinterStyleTwo {
                 printTree(false, indent + (isRight ? " |      " : "        "), leftNode);
             }
         } catch (IllegalAccessException e) {
-            System.err.println("ERROR: Could not access left or right variable field of Node!");
+            System.err.println("ERROR: Could not access left or right variable field of AvlTreeNode!");
         } catch (StackOverflowError e){
             System.err.println("ERROR: Went into crazy infinity loop");
             return;
@@ -82,7 +82,7 @@ public class TreePrinterStyleTwo {
             }
             System.out.print("\n");
         } catch (IllegalAccessException e) {
-            System.err.println("ERROR: Could not access left or right variable field of Node!");
+            System.err.println("ERROR: Could not access left or right variable field of AvlTreeNode!");
         }
     }
 
@@ -98,7 +98,7 @@ public class TreePrinterStyleTwo {
         } catch (ClassNotFoundException e){
             System.err.println("Error, could not find such class.");
         } catch (NoSuchFieldException e) {
-            System.err.println("ERROR: Could not find the nodes variable in Node Class!");
+            System.err.println("ERROR: Could not find the nodes variable in AvlTreeNode Class!");
         }catch (StackOverflowError e){
             System.err.println("ERROR: Went into crazy infinity loop");
             return;

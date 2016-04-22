@@ -25,7 +25,7 @@ To setup:
 
 
 		It is self explanatory: first variable, AKA "TREE_ROOT_VARIABLE_NAME" is the name of the variable that holds the root of the tree. in my case it was "rootTree" and it was located in a class I created called "Tree".
-		The others are related to the Node: What is the class name of the Node you are using? I called it "TreeNode". rest are you responsibility.
+		The others are related to the AvlNode: What is the class name of the AvlNode you are using? I called it "TreeNode". rest are you responsibility.
 
 	4) omg we are done! lets get excited.
 

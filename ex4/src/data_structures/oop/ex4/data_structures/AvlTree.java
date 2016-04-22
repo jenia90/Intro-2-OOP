@@ -1,3 +1,4 @@
+package oop.ex4.data_structures;
 import java.util.Iterator;
 
 /**
@@ -6,6 +7,7 @@ import java.util.Iterator;
 public class AvlTree implements Iterable<Integer> {
 
     private int size = 0;
+    private AvlTreeNode root;
 
     public AvlTree(){
 
@@ -16,11 +18,20 @@ public class AvlTree implements Iterable<Integer> {
     }
 
     public AvlTree(int[] data){
-
+        for (int val :
+                data) {
+            add(val);
+        }
     }
 
     public boolean add(int newValue){
-        return false;
+        if(root == null){
+            root = new AvlTreeNode(newValue, this, null);
+            size++;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public int contains(int searchVal){
@@ -33,14 +44,6 @@ public class AvlTree implements Iterable<Integer> {
 
     public int size(){
         return size;
-    }
-
-    public boolean rotateRight(AvlTree node){
-        return false;
-    }
-
-    public boolean rotateLeft(AvlTree node){
-        return false;
     }
 
     public static int findMinNodes(int h){
