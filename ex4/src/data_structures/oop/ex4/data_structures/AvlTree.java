@@ -1,4 +1,5 @@
 package oop.ex4.data_structures;
+import java.lang.reflect.Array;
 import java.util.Iterator;
 
 /**
@@ -7,7 +8,7 @@ import java.util.Iterator;
 public class AvlTree implements Iterable<Integer> {
 
     private int size = 0;
-    private AvlTreeNode root;
+    private AvlTreeNode rootNode;
 
     public AvlTree(){
 
@@ -25,21 +26,133 @@ public class AvlTree implements Iterable<Integer> {
     }
 
     public boolean add(int newValue){
-        if(root == null){
-            root = new AvlTreeNode(newValue, this, null);
+        if(rootNode == null){
+            rootNode = new AvlTreeNode(newValue, this, null);
             size++;
             return true;
         } else {
-            return false;
+            if (addTo(rootNode, newValue)){
+                size++;
+                return true;
+            }
         }
+
+        return false;
     }
 
-    public int contains(int searchVal){
-        return 0;
+    private boolean addTo(AvlTreeNode node, int value){
+        if(value < node.getValue()){
+            if(node.getLeftChildNode() == null){
+                node.setLeftChildNode(new AvlTreeNode(value, null, node));
+            } else{
+                addTo(node.getLeftChildNode(),value);
+            }
+        } else if (value >= node.getValue()){
+            if(node.getRightChildNode() == null){
+                node.setRightChildNode(new AvlTreeNode(value, null, node));
+            } else {
+                addTo(node.getRightChildNode(), value);
+            }
+        }
+
+        return false;
+    }
+
+    protected AvlTreeNode getRoot(){
+        return rootNode;
+    }
+
+    public boolean contains(int searchVal){
+        return findNode(searchVal) != null;
     }
 
     public boolean delete(int toDelete){
-        return false;
+        AvlTreeNode currentNode = findNode(toDelete);
+
+        if(currentNode == null)
+            return false;
+
+        AvlTreeNode treeToBalance = currentNode.getParentNode();
+        size--;
+
+        if(currentNode.getRightChildNode() == null){
+            if (currentNode.getParentNode() == null){
+                rootNode = currentNode.getLeftChildNode();
+                if (rootNode != null){
+                    rootNode.setParentNode(null);
+                }
+            } else {
+                if (currentNode.getParentNode().getValue() > currentNode.getValue())
+                    currentNode.getParentNode().setLeftChildNode(currentNode.getLeftChildNode());
+                else if (currentNode.getParentNode().getValue() < currentNode.getValue())
+                    currentNode.getParentNode().setRightChildNode(currentNode.getLeftChildNode());
+            }
+        } else if (currentNode.getRightChildNode().getLeftChildNode() == null){
+            currentNode.getRightChildNode().setLeftChildNode(currentNode.getLeftChildNode());
+
+            if (currentNode.getParentNode() == null){
+                rootNode = currentNode.getRightChildNode();
+                if (rootNode != null){
+                    rootNode.setParentNode(null);
+                }
+            } else {
+                if (currentNode.getParentNode().getValue() > currentNode.getValue())
+                    currentNode.getParentNode().setLeftChildNode(currentNode.getRightChildNode());
+                else if (currentNode.getParentNode().getValue() < currentNode.getValue())
+                    currentNode.getParentNode().setRightChildNode(currentNode.getRightChildNode());
+            }
+        } else {
+            AvlTreeNode leftMost = currentNode.getRightChildNode().getLeftChildNode();
+
+            while (leftMost.getLeftChildNode() != null){
+                leftMost = leftMost.getLeftChildNode();
+            }
+
+            leftMost.getParentNode().setLeftChildNode(leftMost.getRightChildNode());
+
+            leftMost.setLeftChildNode(currentNode.getLeftChildNode());
+
+            leftMost.setRightChildNode(currentNode.getRightChildNode());
+
+            if (currentNode.getParentNode() == null){
+                rootNode = leftMost;
+                if (rootNode != null){
+                    rootNode.setParentNode(null);
+                }
+            } else {
+                if (currentNode.getParentNode().getValue() > currentNode.getValue())
+                    currentNode.getParentNode().setLeftChildNode(leftMost);
+                else if (currentNode.getParentNode().getValue() < currentNode.getValue())
+                    currentNode.getParentNode().setRightChildNode(leftMost);
+            }
+        }
+
+        if (treeToBalance != null)
+            treeToBalance.balanceNode();
+        else {
+            if (rootNode != null)
+                rootNode.balanceNode();
+        }
+
+        return true;
+    }
+
+    private AvlTreeNode findNode(int value){
+        AvlTreeNode currentNode = rootNode;
+
+        while(currentNode != null){
+            if(value < currentNode.getValue()){
+                currentNode = currentNode.getLeftChildNode();
+            } else if (value > currentNode.getValue()){
+                currentNode = currentNode.getRightChildNode();
+            } else break;
+        }
+
+        return currentNode;
+    }
+
+    protected int[] inOrderTraversal(int numElements, ArrayList<int> currentList){
+
     }
 
     public int size(){

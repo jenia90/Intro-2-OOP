@@ -10,7 +10,7 @@ public class AvlTreeNode {
     private int value;
 
     public AvlTreeNode(){
-        this(0, null, null);
+        this(0, new AvlTree(), null);
     }
 
     public AvlTreeNode(int value, AvlTree tree, AvlTreeNode parentNode){
