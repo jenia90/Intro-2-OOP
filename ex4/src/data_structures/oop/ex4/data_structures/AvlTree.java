@@ -1,5 +1,5 @@
 package oop.ex4.data_structures;
-import java.lang.reflect.Array;
+
 import java.util.Iterator;
 
 /**
@@ -11,11 +11,11 @@ public class AvlTree implements Iterable<Integer> {
     private AvlTreeNode rootNode;
 
     public AvlTree(){
-
+        rootNode = null;
     }
 
     public AvlTree(AvlTree avlTree){
-
+        rootNode = new AvlTreeNode(avlTree.getRoot().getValue(), avlTree, null);
     }
 
     public AvlTree(int[] data){
@@ -62,8 +62,12 @@ public class AvlTree implements Iterable<Integer> {
         return rootNode;
     }
 
+    protected void setRoot(AvlTreeNode newRoot){
+        rootNode = newRoot;
+    }
+
     public boolean contains(int searchVal){
-        return findNode(searchVal) != null;
+        return findNode(searchVal) != null; // TODO: redo this.
     }
 
     public boolean delete(int toDelete){
@@ -151,8 +155,19 @@ public class AvlTree implements Iterable<Integer> {
         return currentNode;
     }
 
-    protected int[] inOrderTraversal(int numElements, ArrayList<int> currentList){
+    private int[] inOrderTraversal(AvlTreeNode node, int[] currentList, int index){
+        if(currentList == null){
+            currentList = new int[size];
+            index = 0;
+        }
 
+        if (node != null){
+            inOrderTraversal(node.getLeftChildNode(), currentList, index);
+            currentList[index++] = node.getValue();
+            inOrderTraversal(node.getRightChildNode(), currentList, index);
+        }
+
+        return currentList;
     }
 
     public int size(){
@@ -170,6 +185,23 @@ public class AvlTree implements Iterable<Integer> {
      */
     @Override
     public Iterator<Integer> iterator() {
-        return null;
+        int[] valueList = inOrderTraversal(rootNode, null, 0);
+
+        Iterator<Integer> it = new Iterator<Integer>() {
+
+            private int currentIndex = 0;
+
+            @Override
+            public boolean hasNext() {
+                return currentIndex < size();
+            }
+
+            @Override
+            public Integer next() {
+                return valueList[currentIndex++];
+            }
+        };
+
+        return it;
     }
 }

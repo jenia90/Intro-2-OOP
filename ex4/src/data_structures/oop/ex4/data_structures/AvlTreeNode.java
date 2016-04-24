@@ -9,10 +9,6 @@ public class AvlTreeNode {
     private AvlTreeNode leftChildNode;
     private int value;
 
-    public AvlTreeNode(){
-        this(0, new AvlTree(), null);
-    }
-
     public AvlTreeNode(int value, AvlTree tree, AvlTreeNode parentNode){
         this.value = value;
         this.tree = tree;
@@ -58,13 +54,13 @@ public class AvlTreeNode {
     }
 
     protected void balanceNode(){
-        if(state() == TreeState.RightHeavy){
+        if(getState() == TreeState.RightHeavy){
             if(rightChildNode != null && rightChildNode.balanceFactor() < 0){
                 rotateLeftRight();
             } else {
                 rotateLeft();
             }
-        } else if (state() == TreeState.LeftHeavy){
+        } else if (getState() == TreeState.LeftHeavy){
             if(leftChildNode != null && leftChildNode.balanceFactor() > 0){
                 rotateRightLeft();
             } else {
@@ -73,24 +69,42 @@ public class AvlTreeNode {
         }
     }
 
-    public void rotateLeft(){
-        parentNode.setRightChildNode(leftChildNode);
-        setLeftChildNode(parentNode);
+    private void rotateLeft(){
+        AvlTreeNode newRoot = rightChildNode;
+        replaceRoot(newRoot);
+        rightChildNode = newRoot.leftChildNode;
+        newRoot.leftChildNode = this;
     }
 
-    public void rotateRight(){
-        parentNode.setLeftChildNode(rightChildNode);
-        setRightChildNode(parentNode);
+    private void rotateRight(){
+        AvlTreeNode newRoot = leftChildNode;
+        replaceRoot(newRoot);
+        leftChildNode = newRoot.rightChildNode;
+        newRoot.rightChildNode = this;
     }
 
-    public void rotateLeftRight(){
+    private void rotateLeftRight(){
         rightChildNode.rotateRight();
         rotateLeft();
     }
 
-    public void rotateRightLeft(){
+    private void rotateRightLeft(){
         leftChildNode.rotateLeft();
         rotateRight();
+    }
+
+    private void replaceRoot(AvlTreeNode newRoot){
+        if (this.parentNode != null){
+            if (this.parentNode.leftChildNode == this)
+                this.parentNode.leftChildNode = newRoot;
+            else if (this.parentNode.rightChildNode == this)
+                this.parentNode.rightChildNode = newRoot;
+        } else {
+            tree.setRoot(newRoot);
+        }
+
+        newRoot.setParentNode(this.parentNode);
+        this.setParentNode(newRoot);
     }
 
     private int maxChildHeight(AvlTreeNode node){
@@ -109,7 +123,7 @@ public class AvlTreeNode {
         return maxChildHeight(rightChildNode);
     }
 
-    private TreeState state(){
+    private TreeState getState(){
         if(balanceFactor() > 1)
             return TreeState.RightHeavy;
 
