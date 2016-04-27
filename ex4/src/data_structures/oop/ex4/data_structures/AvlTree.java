@@ -156,11 +156,6 @@ public class AvlTree implements Iterable<Integer> {
     }
 
     private int[] inOrderTraversal(AvlTreeNode node, int[] currentList, int index){
-        if(currentList == null){
-            currentList = new int[size];
-            index = 0;
-        }
-
         if (node != null){
             inOrderTraversal(node.getLeftChildNode(), currentList, index);
             currentList[index++] = node.getValue();
@@ -185,7 +180,7 @@ public class AvlTree implements Iterable<Integer> {
      */
     @Override
     public Iterator<Integer> iterator() {
-        int[] valueList = inOrderTraversal(rootNode, null, 0);
+        int[] valueList = inOrderTraversal(rootNode, new int[size], 0);
 
         Iterator<Integer> it = new Iterator<Integer>() {
 

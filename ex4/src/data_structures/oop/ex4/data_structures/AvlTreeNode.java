@@ -3,6 +3,13 @@ package oop.ex4.data_structures;
  * Created by jenia on 14/04/2016.
  */
 public class AvlTreeNode {
+
+    private enum TreeState{
+        Balanced,
+        LeftHeavy,
+        RightHeavy
+    }
+
     private AvlTree tree;
     private AvlTreeNode parentNode;
     private AvlTreeNode rightChildNode;
@@ -136,10 +143,4 @@ public class AvlTreeNode {
     private int balanceFactor(){
         return rightHeight() - leftHeight();
     }
-}
-
-enum TreeState{
-    Balanced,
-    LeftHeavy,
-    RightHeavy
 }
