@@ -1,5 +1,6 @@
 package oop.ex4.data_structures;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -16,9 +17,13 @@ public class AvlTree implements Iterable<Integer> {
 
     public AvlTree(AvlTree avlTree){
         rootNode = new AvlTreeNode(avlTree.getRoot().getValue(), avlTree, null);
+        size = avlTree.size();
     }
 
     public AvlTree(int[] data){
+        if(data == null){
+            throw new NullPointerException("Empty data constructor used.");
+        }
         for (int val :
                 data) {
             add(val);
@@ -27,12 +32,13 @@ public class AvlTree implements Iterable<Integer> {
 
     public boolean add(int newValue){
         if(rootNode == null){
-            rootNode = new AvlTreeNode(newValue, this, null);
+            setRoot(new AvlTreeNode(newValue, new AvlTree(), null));
             size++;
             return true;
         } else {
             if (addTo(rootNode, newValue)){
                 size++;
+                System.out.println(inOrderTraversal(rootNode, null));
                 return true;
             }
         }
@@ -41,18 +47,26 @@ public class AvlTree implements Iterable<Integer> {
     }
 
     private boolean addTo(AvlTreeNode node, int value){
+        AvlTreeNode parentNode = node.getParentNode();
         if(value < node.getValue()){
             if(node.getLeftChildNode() == null){
-                node.setLeftChildNode(new AvlTreeNode(value, null, node));
+                node.setLeftChildNode(new AvlTreeNode(value, new AvlTree(), node));
             } else{
                 addTo(node.getLeftChildNode(),value);
+                if(node.getParentNode() != null)
+                    node.getParentNode().balanceNode();
             }
-        } else if (value >= node.getValue()){
+            return true;
+        } else if (value > node.getValue()){
             if(node.getRightChildNode() == null){
-                node.setRightChildNode(new AvlTreeNode(value, null, node));
+                node.setRightChildNode(new AvlTreeNode(value, new AvlTree(), node));
             } else {
                 addTo(node.getRightChildNode(), value);
+                if(node.getParentNode() != null)
+                    node.getParentNode().balanceNode();
             }
+
+            return true;
         }
 
         return false;
@@ -66,8 +80,12 @@ public class AvlTree implements Iterable<Integer> {
         rootNode = newRoot;
     }
 
-    public boolean contains(int searchVal){
-        return findNode(searchVal) != null; // TODO: redo this.
+    public int contains(int searchVal){
+        AvlTreeNode node= findNode(searchVal);
+
+        if(node != null)
+            return rootNode.maxChildHeight(node) - 1;
+        return -1;
     }
 
     public boolean delete(int toDelete){
@@ -155,16 +173,15 @@ public class AvlTree implements Iterable<Integer> {
         return currentNode;
     }
 
-    private int[] inOrderTraversal(AvlTreeNode node, int[] currentList, int index){
+    private ArrayList<Integer> inOrderTraversal(AvlTreeNode node, ArrayList<Integer> currentList){
         if(currentList == null){
-            currentList = new int[size];
-            index = 0;
+            currentList = new ArrayList<Integer>();
         }
 
         if (node != null){
-            inOrderTraversal(node.getLeftChildNode(), currentList, index);
-            currentList[index++] = node.getValue();
-            inOrderTraversal(node.getRightChildNode(), currentList, index);
+            inOrderTraversal(node.getLeftChildNode(), currentList);
+            currentList.add(node.getValue());
+            inOrderTraversal(node.getRightChildNode(), currentList);
         }
 
         return currentList;
@@ -175,7 +192,12 @@ public class AvlTree implements Iterable<Integer> {
     }
 
     public static int findMinNodes(int h){
-        return 0;
+        if(h == 0)
+            return 1;
+        if(h == 1)
+            return 2;
+
+        return findMinNodes(h-1) + findMinNodes(h-2) + 1;
     }
 
     /**
@@ -185,20 +207,19 @@ public class AvlTree implements Iterable<Integer> {
      */
     @Override
     public Iterator<Integer> iterator() {
-        int[] valueList = inOrderTraversal(rootNode, null, 0);
+        ArrayList<Integer> valueList = inOrderTraversal(rootNode, null);
 
         Iterator<Integer> it = new Iterator<Integer>() {
-
-            private int currentIndex = 0;
+            int currentIndex = 0;
 
             @Override
             public boolean hasNext() {
-                return currentIndex < size();
+                return currentIndex < valueList.size();
             }
 
             @Override
             public Integer next() {
-                return valueList[currentIndex++];
+                return valueList.get(currentIndex++);
             }
         };
 
