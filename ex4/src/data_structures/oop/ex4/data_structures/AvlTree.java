@@ -38,7 +38,7 @@ public class AvlTree implements Iterable<Integer> {
         } else {
             if (addTo(rootNode, newValue)){
                 size++;
-                System.out.println(inOrderTraversal(rootNode, null));
+                System.out.println(inOrderTraversal(rootNode, null)); // TODO: REMOVE!
                 return true;
             }
         }
@@ -81,10 +81,14 @@ public class AvlTree implements Iterable<Integer> {
     }
 
     public int contains(int searchVal){
-        AvlTreeNode node= findNode(searchVal);
+        AvlTreeNode node = findNode(searchVal);
 
-        if(node != null)
+        if(node != null) {
+            if (node == rootNode)
+                return 0;
             return rootNode.maxChildHeight(node) - 1;
+        }
+
         return -1;
     }
 

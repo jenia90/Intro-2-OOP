@@ -64,13 +64,13 @@ public class AvlTreeNode {
         if(getState() == TreeState.RightHeavy){
             System.out.println("right heavy");
             if(rightChildNode != null && rightChildNode.balanceFactor() < 0){
-                rotateRightLeft();
+                rotateLeftRight();
             } else {
                 rotateLeft();
             }
         } else if (getState() == TreeState.LeftHeavy){
             if(leftChildNode != null && leftChildNode.balanceFactor() > 0){
-                rotateLeftRight();
+                rotateRightLeft();
             } else {
                 rotateRight();
             }
