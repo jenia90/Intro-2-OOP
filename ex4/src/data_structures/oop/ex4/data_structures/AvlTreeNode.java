@@ -61,9 +61,8 @@ public class AvlTreeNode {
     }
 
     protected void balanceNode(){
-        if(getState() == TreeState.RightHeavy){
-            System.out.println("right heavy");
-            if(rightChildNode != null && rightChildNode.balanceFactor() < 0){
+        if(getState() == TreeState.RightHeavy) {
+            if (rightChildNode != null && rightChildNode.balanceFactor() < 0) {
                 rotateLeftRight();
             } else {
                 rotateLeft();
@@ -115,6 +114,10 @@ public class AvlTreeNode {
         this.setParentNode(newRoot);
     }
 
+    public int height(){
+        return maxChildHeight(this);
+    }
+
     public int maxChildHeight(AvlTreeNode node){
         if(node != null){
             return 1 + Math.max(maxChildHeight(node.getLeftChildNode()), maxChildHeight(node.getRightChildNode()));
@@ -135,7 +138,7 @@ public class AvlTreeNode {
         if(balanceFactor() > 1)
             return TreeState.RightHeavy;
 
-        else if(balanceFactor() < 1)
+        else if(balanceFactor() < -1)
             return TreeState.LeftHeavy;
 
         return TreeState.Balanced;
