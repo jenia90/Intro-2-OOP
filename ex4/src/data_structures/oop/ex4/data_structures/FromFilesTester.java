@@ -96,7 +96,7 @@ public class FromFilesTester {
     /**
      * Handles printing the tree.
      */
-    private static void printTree(){
+    public static void printTree(){
         try{
             System.out.println("\n");  // To make sure tree print starts at new line
             Class rootVariableClass = Class.forName(PACKAGE + AVL_TREE_CLASS_NAME);

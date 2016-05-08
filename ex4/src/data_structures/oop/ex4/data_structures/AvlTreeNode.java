@@ -60,7 +60,7 @@ public class AvlTreeNode {
         this.value = value;
     }
 
-    protected void balanceNode(){
+    public void balanceNode(){
         if(getState() == TreeState.RightHeavy) {
             if (rightChildNode != null && rightChildNode.balanceFactor() < 0) {
                 rotateLeftRight();
@@ -77,17 +77,17 @@ public class AvlTreeNode {
     }
 
     private void rotateLeft(){
-        AvlTreeNode newRoot = rightChildNode;
+        AvlTreeNode newRoot = getRightChildNode();
         replaceRoot(newRoot);
-        rightChildNode = newRoot.leftChildNode;
-        newRoot.leftChildNode = this;
+        setRightChildNode(newRoot.getLeftChildNode());
+        newRoot.setLeftChildNode(this);
     }
 
     private void rotateRight(){
-        AvlTreeNode newRoot = leftChildNode;
+        AvlTreeNode newRoot = getLeftChildNode();
         replaceRoot(newRoot);
-        leftChildNode = newRoot.rightChildNode;
-        newRoot.rightChildNode = this;
+        setLeftChildNode(newRoot.getRightChildNode());
+        newRoot.setRightChildNode(this);
     }
 
     private void rotateLeftRight(){
@@ -101,21 +101,22 @@ public class AvlTreeNode {
     }
 
     private void replaceRoot(AvlTreeNode newRoot){
-        if (this.parentNode != null){
-            if (this.parentNode.leftChildNode == this)
-                this.parentNode.leftChildNode = newRoot;
-            else if (this.parentNode.rightChildNode == this)
-                this.parentNode.rightChildNode = newRoot;
+        if (parentNode != null){
+            //System.out.println("replacing root, parent: " + parentNode.getValue());
+            if (parentNode.getLeftChildNode() == this)
+                parentNode.setLeftChildNode(newRoot);
+            else if (parentNode.getRightChildNode() == this)
+                parentNode.setRightChildNode(newRoot);
         } else {
             tree.setRoot(newRoot);
         }
 
-        newRoot.setParentNode(this.parentNode);
+        newRoot.setParentNode(parentNode);
         this.setParentNode(newRoot);
     }
 
     public int height(){
-        return maxChildHeight(this);
+        return maxChildHeight(this) - 1;
     }
 
     public int maxChildHeight(AvlTreeNode node){

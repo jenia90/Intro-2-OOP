@@ -1,5 +1,6 @@
 package oop.ex4.data_structures;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -18,11 +19,15 @@ public class AvlTree implements Iterable<Integer> {
     }
 
     public AvlTree(AvlTree avlTree){
+        this();
+
         rootNode = new AvlTreeNode(avlTree.getRoot().getValue(), avlTree, null);
         size = avlTree.size();
     }
 
     public AvlTree(int[] data){
+        this();
+
         try {
             for (int val :
                     data) {
@@ -35,6 +40,9 @@ public class AvlTree implements Iterable<Integer> {
     }
 
     public boolean add(int newValue){
+        if (findNode(newValue) != null)
+            return false;
+
         if(rootNode == null){
             setRoot(new AvlTreeNode(newValue, this, null));
         } else {
@@ -51,10 +59,6 @@ public class AvlTree implements Iterable<Integer> {
 
             if(left == null){
                 node.setLeftChildNode(new AvlTreeNode(value, this, node));
-                /*if(node.getParentNode() != null)
-                    System.out.println("added: " + value + "\tto left of: " + node.getParentNode().getValue());
-                else
-                    System.out.println("added: " + value);*/
             } else {
                 addTo(left,value);
             }
@@ -63,17 +67,11 @@ public class AvlTree implements Iterable<Integer> {
 
             if(right == null){
                 node.setRightChildNode(new AvlTreeNode(value, this, node));
-                /*if(node.getParentNode() != null)
-                    System.out.println("added: " + value + "\tto right of: " + node.getParentNode().getValue());
-                else
-                    System.out.println("added: " + value);*/
             } else {
                 addTo(right, value);
             }
         }
-        System.out.println(preOrderTraversal(rootNode, new ArrayList<>()));
         node.balanceNode();
-        System.out.println(preOrderTraversal(rootNode, new ArrayList<>()));
     }
 
     protected AvlTreeNode getRoot(){
@@ -86,17 +84,31 @@ public class AvlTree implements Iterable<Integer> {
 
     public int contains(int searchVal){
         AvlTreeNode node = findNode(searchVal);
-
+        int height = 0;
 
         if(node != null) {
-            return rootNode.height() - node.height();
+            FromFilesTester.printTree();
+            AvlTreeNode currentNode = rootNode;
+
+
+            while(currentNode != null){
+                if(searchVal < currentNode.getValue()){
+                    currentNode = currentNode.getLeftChildNode();
+                    height++;
+                } else if (searchVal > currentNode.getValue()){
+                    currentNode = currentNode.getRightChildNode();
+                    height++;
+                } else break;
+            }
+
+            return height;
         }
 
         return ERROR_VAL;
     }
 
     public boolean delete(int toDelete){
-       AvlTreeNode currentNode;
+        AvlTreeNode currentNode;
         currentNode = findNode(toDelete);
 
         if(currentNode == null)
@@ -191,12 +203,15 @@ public class AvlTree implements Iterable<Integer> {
 
     private AvlTreeNode findNode(int value){
         AvlTreeNode currentNode = rootNode;
+        int height = 0;
 
         while(currentNode != null){
             if(value < currentNode.getValue()){
                 currentNode = currentNode.getLeftChildNode();
+                height++;
             } else if (value > currentNode.getValue()){
                 currentNode = currentNode.getRightChildNode();
+                height++;
             } else break;
         }
 
@@ -205,28 +220,9 @@ public class AvlTree implements Iterable<Integer> {
 
     private ArrayList<Integer> inOrderTraversal(AvlTreeNode node, ArrayList<Integer> currentList){
         if (node != null){
-            /*AvlTreeNode left = node.getLeftChildNode();
-            AvlTreeNode right = node.getRightChildNode();
-
-            if(left != null)
-                System.out.println("left child: " + left.getValue());
-            if(right != null)
-                System.out.println("right child: " + right.getValue());*/
-
             inOrderTraversal(node.getLeftChildNode(), currentList);
-            //System.out.println("Adding to array: " + node.getValue());
             currentList.add(node.getValue());
             inOrderTraversal(node.getRightChildNode(), currentList);
-        }
-        //System.out.println(currentList);
-        return currentList;
-    }
-
-    private ArrayList<Integer> preOrderTraversal(AvlTreeNode node, ArrayList<Integer> currentList){
-        if(node != null){
-            currentList.add(node.getValue());
-            preOrderTraversal(node.getLeftChildNode(), currentList);
-            preOrderTraversal(node.getRightChildNode(), currentList);
         }
 
         return currentList;
@@ -264,7 +260,6 @@ public class AvlTree implements Iterable<Integer> {
 
             @Override
             public Integer next() {
-                System.out.println("Index: " + currentIndex + "\tValue: " + valueList.get(currentIndex));
                 return valueList.get(currentIndex++);
             }
         };
