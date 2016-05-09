@@ -1,0 +1,94 @@
+jenia90
+
+
+
+
+=============================
+=      File description     =
+=============================
+
+AvlTree.java - contains the implementation of the AVL tree data structure.
+
+AvlTreeNode.java - contains the implementation of a single node in the AvlTree data structure.
+
+README - this file.
+
+=============================
+=          Design           =
+=============================
+
+In my design the AvlTree class implements all the basic methods which the data structure needs to work and all the
+logic of balancing and rotation of nodes is implemented inside the AvlTreeNode class. Also, the AvlTreeNode class
+calculates the height of the object it implements in the tree.
+
+=============================
+=  Implementation details   =
+=============================
+
+***********************
+*     Add method:     *
+***********************
+The add method in my implementation uses a recursive helper method addTo(AvlTreeNode node, int value) which finds
+where the new value node should be attached to the tree.
+
+***********************
+*    Delete method:   *
+***********************
+First we use findNode(int value) method to find the node with the given value, if it's found we proceed onto deleting
+it and updating the tree so it will remain balanced.
+
+So, in this method there are 3 cases:
+1: If the node we want to delete has no right child, then its left subtree replaces it.
+2: If the node we want to delete right child has no left child, then its right child replaces it.
+3: If the node we want to delete right child has a left child, replace the node with its right child's left-most child
+In each case we use a helper method, updateTree(AvlTreeNode parentNode, AvlTreeNode childNode, int value) which
+updates the tree nodes around the deleted node.
+
+
+***********************
+*   Contains method:  *
+***********************
+It compares the value of the initial node with the node on the way to the node we search for and increments the
+height variable with each step. In the end it returns the height or -1 if the node wasn't found.
+
+******************************
+* In-Order-Traversal method: *
+******************************
+This method recursively converts the tree into a sorted array of integers. Nothing special about the implementation,
+it just calls the left subtrees, prints values and the calls the right subtrees.
+
+
+=============================
+=    Answers to questions   =
+=============================
+
+5.1:
+    [5 4 6 7 1 2 3 10 8 12 11 9] gives a tree of height 4 but if you delete any node it becomes a tree of height 3.
+
+             /----- 12
+             |       \----- 11
+     /----- 10
+     |       |               /----- 9
+     |       |       /----- 8
+     |       \----- 7
+     |               \----- 6
+    5
+     |       /----- 4
+     |       |       \----- 3
+     \----- 2
+             \----- 1
+
+5.2:
+    1. Any insertion of n eleme nts into an AVL tree takes O(nlogn).
+
+5.3:
+    1. The in-order-traversal takes O(n) and the insertion takes O(nlogn). So we get:
+       O(n+nlogn) = O(n(1+logn)) = O(nlogn).
+    2. The best possible
+
+5.4:
+    1. Calculating the general member of a recursive formula made it possible to perform the operation in O(1).
+       The only drawback of this implementation is that at h = 44 the method returns Integer.MAX_VALUE.
+    2. You can't go better than O(1).
+
+
