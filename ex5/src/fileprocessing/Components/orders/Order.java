@@ -7,6 +7,16 @@ import java.io.File;
  */
 public abstract class Order {
 
+    private final boolean isReverse;
+
+    public Order(boolean isReverse){
+        this.isReverse = isReverse;
+    }
+
+    public boolean isReverse(){
+        return isReverse;
+    }
+
     /**
      * Orders a list of files in a specific order and returns the ordered list
      * @param files list of files to order

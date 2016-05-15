@@ -6,6 +6,10 @@ import java.io.File;
  * Created by jenia on 14/05/2016.
  */
 public class OrderByType extends Order {
+
+    public OrderByType(boolean isReverse){
+        super(isReverse);
+    }
     /**
      * Orders a list of files in a specific order and returns the ordered list
      *
