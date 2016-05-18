@@ -10,8 +10,8 @@ import java.util.function.*;
 public class DirectoryProcessor {
     private static final int SOURCE_DIR_IDX = 0;
     private static final int COMMAND_FILE_IDX = 1;
-    public static final int FILTER_TYPE_IDX = 0;
-    public static final int KB_CONVERSION = 1024;
+    public static final String FILTER_KWD = "FILTER";
+    public static final String HASHTAG = "#";
 
     /*
     * TODO:
@@ -24,7 +24,7 @@ public class DirectoryProcessor {
     * */
 
 
-    private List<String[]> sections;
+    private List<CommandSection> sections;
 
     public DirectoryProcessor(File commandFile) throws NullPointerException {
         if (commandFile == null)
@@ -37,20 +37,22 @@ public class DirectoryProcessor {
         }
     }
 
-    private List<String[]> parseCommandFile(File commandFile) throws IOException{
+    private List<CommandSection> parseCommandFile(File commandFile) throws IOException{
         if (commandFile.isDirectory())
             throw new IOException("Invalid command file exception.");
 
-        List<String[]> sections = new ArrayList<>();
+        List<CommandSection> sections = new ArrayList<>();
 
         try {
             Scanner s = new Scanner(commandFile);
 
-            while(s.hasNext("FILTER")){
+            while(s.hasNext(FILTER_KWD)){
                 System.out.println(s.next());
-                String[] filterRules = s.next().split("#");
+                String[] filterRules = s.next().split(HASHTAG);
                 s.next();
-                String[] orderBy = s.next().split("#");
+                String[] orderingRules = s.next().split(HASHTAG);
+
+                sections.add(new CommandSection(filterRules, orderingRules));
             }
 
             s.close();
@@ -61,46 +63,9 @@ public class DirectoryProcessor {
         return sections;
     }
 
-    private Predicate<File> getFileFilter(String[] filterBy){
-        switch (filterBy[FILTER_TYPE_IDX]){
-            case "greater_than":
-                Predicate<File> greaterThan =
-                        file -> file.isFile() && file.length() / KB_CONVERSION >= Integer.parseInt(filterBy[1]);
-
-                return filterBy[2].equals("NOT") ? greaterThan.negate() : greaterThan;
-            case "between":
-                Predicate<File> betweenFilter =
-                        file -> file.isFile() && (file.length() / KB_CONVERSION >= Integer.parseInt(filterBy[1]) &&
-                        file.length() / KB_CONVERSION <= Integer.parseInt(filterBy[2]));
-
-                return filterBy[3].equals("NOT") ? betweenFilter.negate() : betweenFilter;
-            case "smaller_than":
-                Predicate<File> smallerThan =
-                        file -> file.isFile() && file.length() / KB_CONVERSION <= Integer.parseInt(filterBy[1]);
-
-                return filterBy[2].equals("NOT") ? smallerThan.negate() : smallerThan;
-            case "file":
-                break;
-            case "contains":
-                break;
-            case "prefix":
-                break;
-            case "suffix":
-                break;
-            case "writeable":
-                break;
-            case "executable":
-                break;
-            case "hidden":
-                break;
-        }
-
-        return null;
-    }
-
     private void processDirectory(String path){
         File file = new File(path);
-        File[] filteredFiles = file.listFiles();
+        Arrays.stream(file.listFiles());
 
     }
 
