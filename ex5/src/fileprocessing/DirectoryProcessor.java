@@ -3,6 +3,7 @@ package fileprocessing;
 import java.io.*;
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.Collectors;
 
 /**
  * Created by jenia on 10/05/2016.
@@ -47,10 +48,12 @@ public class DirectoryProcessor {
             Scanner s = new Scanner(commandFile);
 
             while(s.hasNext(FILTER_KWD)){
-                System.out.println(s.next());
-                String[] filterRules = s.next().split(HASHTAG);
                 s.next();
-                String[] orderingRules = s.next().split(HASHTAG);
+                List<String> filterRules = new ArrayList<>(Arrays.asList(s.next().split(HASHTAG)));
+                filterRules.add("");
+                s.next();
+                List<String> orderingRules =new ArrayList<>(Arrays.asList(s.next().split(HASHTAG)));
+                orderingRules.add("");
 
                 sections.add(new CommandSection(filterRules, orderingRules));
             }
@@ -64,8 +67,12 @@ public class DirectoryProcessor {
     }
 
     private void processDirectory(String path){
-        File file = new File(path);
-        Arrays.stream(file.listFiles());
+        File dir = new File(path);
+        for (CommandSection section : sections) {
+            List<File> fileList = Arrays.stream(dir.listFiles()).filter(section.getFileFilter()).collect(Collectors.toList());
+            fileList.sort(section.getFileComparator());
+            fileList.forEach(f -> System.out.println(f.getName()));
+        }
 
     }
 
