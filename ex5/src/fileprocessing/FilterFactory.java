@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 /**
  * Created by jenia on 19/05/2016.
  */
-public class FileFactory {
+public class FilterFactory {
 
     private static final int FILTER_TYPE_IDX = 0;
     private static final int KB_CONVERSION = 1024;

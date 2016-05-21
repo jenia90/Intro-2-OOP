@@ -13,6 +13,7 @@ public class DirectoryProcessor {
     private static final int COMMAND_FILE_IDX = 1;
     public static final String FILTER_KWD = "FILTER";
     public static final String HASHTAG = "#";
+    public static final String ORDER_KWD = "ORDER";
 
     /*
     * TODO:
@@ -32,14 +33,34 @@ public class DirectoryProcessor {
             throw new NullPointerException("Invalid path for source directory or command file.");
 
         try {
-            sections = parseCommandFile(commandFile);
+            sections = createCommandSections(commandFile);
         } catch (IOException e){
             System.err.println(e);
         }
     }
 
+    private List<CommandSection> createCommandSections(File commandFile) throws IOException{
+        List<CommandSection> sections = new ArrayList<>();
+        List<ArrayList<String>> lines = new ArrayList<>();
+
+        try (Scanner scanner = new Scanner(commandFile)) {
+            while (scanner.hasNext()) {
+                lines.add(new ArrayList<>(Arrays.asList(scanner.next().split(HASHTAG))));
+            }
+        } catch (FileNotFoundException e) {
+            System.err.println("Unable to read command file.\n" + e.getMessage());
+        }
+
+        for (int i = 0; i < lines.size(); i+=4) {
+            if (lines.get(i).equals(FILTER_KWD) && lines.get(i + 2).equals(ORDER_KWD))
+                sections.add(new CommandSection(lines.get(i+1), lines.get(i+3)));
+        }
+
+        return null;
+    }
+
     private List<CommandSection> parseCommandFile(File commandFile) throws IOException{
-        if (commandFile.isDirectory())
+        if (commandFile.isDirectory() || commandFile.length() == 0)
             throw new IOException("Invalid command file exception.");
 
         List<CommandSection> sections = new ArrayList<>();
@@ -52,7 +73,7 @@ public class DirectoryProcessor {
                 List<String> filterRules = new ArrayList<>(Arrays.asList(s.next().split(HASHTAG)));
                 filterRules.add("");
                 s.next();
-                List<String> orderingRules =new ArrayList<>(Arrays.asList(s.next().split(HASHTAG)));
+                List<String> orderingRules = new ArrayList<>(Arrays.asList(s.next().split(HASHTAG)));
                 orderingRules.add("");
 
                 sections.add(new CommandSection(filterRules, orderingRules));
@@ -68,10 +89,14 @@ public class DirectoryProcessor {
 
     private void processDirectory(String path){
         File dir = new File(path);
-        for (CommandSection section : sections) {
-            List<File> fileList = Arrays.stream(dir.listFiles()).filter(section.getFileFilter()).collect(Collectors.toList());
-            fileList.sort(section.getFileComparator());
-            fileList.forEach(f -> System.out.println(f.getName()));
+        try {
+            for (CommandSection section : sections) {
+                List<File> fileList = Arrays.stream(dir.listFiles()).filter(section.getFileFilter()).collect(Collectors.toList());
+                fileList.sort(section.getFileComparator());
+                fileList.forEach(f -> System.out.println(f.getName()));
+            }
+        }catch (NullPointerException e){
+            System.err.println(e.getMessage());
         }
 
     }

@@ -1,7 +1,6 @@
 package fileprocessing;
 
 import java.io.File;
-import java.security.InvalidParameterException;
 import java.util.*;
 import java.util.function.*;
 
@@ -19,7 +18,7 @@ public class CommandSection {
     }
 
     public Predicate<File> getFileFilter(){
-        return FileFactory.getFilter(filterRules);
+        return FilterFactory.getFilter(filterRules);
     }
 
     public Comparator<File> getFileComparator(){
