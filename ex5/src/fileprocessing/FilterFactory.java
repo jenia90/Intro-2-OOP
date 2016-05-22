@@ -12,12 +12,13 @@ public class FilterFactory {
 
     private static final int FILTER_TYPE_IDX = 0;
     private static final int KB_CONVERSION = 1024;
-    public static final int NOT_BETWEEN_IDX = 3, LOWER_LIMIT_IDX = 1, UPPER_LIMIT_IDX = 2;
-    public static final int VALUE_IDX = 1;
+    private static final int LOWER_LIMIT_IDX = 1, UPPER_LIMIT_IDX = 2;
+    private static final int VALUE_IDX = 1;
     public static final String NOT = "NOT";
 
     public static Predicate<File> getFilter(List<String> filterRules) {
         Predicate<File> fileFilter;
+        int lastIndex = filterRules.size() - 1;
 
         switch (filterRules.get(FILTER_TYPE_IDX)){
             case "greater_than":
@@ -35,7 +36,7 @@ public class FilterFactory {
                         file -> file.isFile() && (file.length() / KB_CONVERSION >= lowerLimit ||
                                 file.length() / KB_CONVERSION <= upperLimit);
 
-                return filterRules.get(NOT_BETWEEN_IDX).equals(NOT) ? betweenSizeFilter.negate() : betweenSizeFilter;
+                return filterRules.get(lastIndex).equals(NOT) ? betweenSizeFilter.negate() : betweenSizeFilter;
             case "smaller_than":
                 fileFilter =
                         file -> file.isFile() && file.length() / KB_CONVERSION <= Double.parseDouble(filterRules.get(VALUE_IDX));
@@ -68,12 +69,12 @@ public class FilterFactory {
                         (filterRules.get(VALUE_IDX).equals("NO") && !file.isHidden());
                 break;
             case "all":
-                return filterRules.get(VALUE_IDX).equals(NOT) ? file -> false : file -> true;
+                return filterRules.get(lastIndex).equals(NOT) ? file -> false : file -> true;
 
             default:
-                throw new InvalidParameterException("Wrong filter name command");
+                throw new InvalidParameterException("Wrong filter type command");
         }
 
-        return filterRules.get(1).equals(NOT) ? fileFilter.negate() : fileFilter;
+        return filterRules.get(lastIndex).equals(NOT) ? fileFilter.negate() : fileFilter;
     }
 }

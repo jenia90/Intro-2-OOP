@@ -10,10 +10,10 @@ import java.util.List;
  */
 public class ComparatorFactory {
 
-    public static final int ORDER_BY_IDX = 0;
-    public static final String REVERSE = "REVERSE";
-    public static final String FILE_TYPE_DLM = ".";
-    public static final int REVERSE_KWD_IDX = 1;
+    private static final int ORDER_BY_IDX = 0;
+    private static final String REVERSE = "REVERSE";
+    private static final String FILE_TYPE_DLM = ".";
+    private static final int REVERSE_KWD_IDX = 1;
 
     public static Comparator<File> getComparator(List<String> orderingRules){
         Comparator<File> fileComparator;

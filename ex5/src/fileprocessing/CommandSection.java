@@ -5,16 +5,20 @@ import java.util.*;
 import java.util.function.*;
 
 /**
- * Created by jenia on 18/05/2016.
+ * Represents a section in command file.
  */
 public class CommandSection {
+
+    private static final String HASHTAG = "#";
 
     private final List<String> filterRules;
     private final List<String> orderingRules;
 
-    public CommandSection(List<String> filterRules, List<String> orderingRules) {
-        this.filterRules = filterRules;
-        this.orderingRules = orderingRules;
+    public CommandSection(String filterRules, String orderingRules) {
+        this.filterRules = new ArrayList<>(Arrays.asList(filterRules.split(HASHTAG)));
+        this.filterRules.add("");
+        this.orderingRules = new ArrayList<>(Arrays.asList(orderingRules.split(HASHTAG)));
+        this.orderingRules.add("");
     }
 
     public Predicate<File> getFileFilter(){
