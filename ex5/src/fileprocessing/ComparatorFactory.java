@@ -35,7 +35,7 @@ public class ComparatorFactory {
                 break;
 
             default:
-                throw new InvalidParameterException("Wrong order name command.");
+                throw new InvalidParameterException();
         }
 
         return orderingRules.get(REVERSE_KWD_IDX).equals(REVERSE) ? fileComparator.reversed() : fileComparator;
