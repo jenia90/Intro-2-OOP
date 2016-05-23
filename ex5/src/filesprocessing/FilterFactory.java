@@ -1,4 +1,4 @@
-package fileprocessing;
+package filesprocessing;
 
 import java.io.File;
 import java.security.InvalidParameterException;
@@ -51,7 +51,7 @@ public class FilterFactory {
             case "suffix":
                 fileFilter = file -> file.getName().endsWith(filterRules.get(VALUE_IDX));
                 break;
-            case "writeable":
+            case "writable":
                 fileFilter = file -> filterRules.get(VALUE_IDX).equals(YES) && file.canWrite() ||
                         filterRules.get(VALUE_IDX).equals(NO) && !file.canWrite();
                 break;

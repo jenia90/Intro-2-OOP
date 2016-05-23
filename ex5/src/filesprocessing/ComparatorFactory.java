@@ -1,4 +1,4 @@
-package fileprocessing;
+package filesprocessing;
 
 import java.io.File;
 import java.security.InvalidParameterException;

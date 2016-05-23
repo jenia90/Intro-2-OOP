@@ -1,4 +1,4 @@
-package fileprocessing;
+package filesprocessing;
 
 import java.io.*;
 import java.nio.file.InvalidPathException;
@@ -39,7 +39,7 @@ public class DirectoryProcessor {
         }
 
         int index = 0;
-        while (index + 3 < lines.size() || index + 2 < lines.size()){
+        while (index + 2 <= lines.size()){
             if (!lines.get(index).equals(FILTER))
                 throw new InvalidParameterException("FILTER sub-section missing.");
             else if (!lines.get(index + 2).equals(ORDER))
@@ -48,7 +48,7 @@ public class DirectoryProcessor {
             try {
                 sections.add(new CommandSection(lines.get(index + FILTER_RULES_IDX), lines.get(index + ORDER_RULES_IDX)));
             } catch (InvalidParameterException e){
-                System.err.println("Warning in line: " + index);
+                System.err.println("Warning in line: " + (index + 1));
             }
 
             if (lines.get(index + ORDER_RULES_IDX).equals(FILTER)){
@@ -67,16 +67,10 @@ public class DirectoryProcessor {
         if (!dir.exists() || !dir.isDirectory())
             throw new InvalidPathException(dir.getAbsolutePath(), "Invalid path.");
 
-        try {
-            int i = 0;
-            for (CommandSection section : sections) {
-                System.out.println("Section " + ++i);
-                List<File> fileList = Arrays.stream(dir.listFiles(file -> file.isFile() && section.getFileFilter().test(file))).collect(Collectors.toList());
-                fileList.sort(section.getFileComparator());
-                fileList.forEach(file -> System.out.println(file.getName()));
-            }
-        } catch (InvalidParameterException e){
-            System.err.println("Bad filter or order command definition.");
+        for (CommandSection section : sections) {
+            List<File> fileList = Arrays.stream(dir.listFiles(file -> file.isFile() && section.getFileFilter().test(file))).collect(Collectors.toList());
+            fileList.sort(section.getFileComparator());
+            fileList.forEach(file -> System.out.println(file.getName()));
         }
 
     }
@@ -87,7 +81,7 @@ public class DirectoryProcessor {
                 throw new IOException("Please check path of source dir and command file are correct.");
             DirectoryProcessor dp = new DirectoryProcessor(new File(args[COMMAND_FILE_IDX]));
             dp.processDirectory(args[SOURCE_DIR_IDX]);
-        } catch (IOException | InvalidParameterException e){
+        } catch (IOException | InvalidParameterException | InvalidPathException e){
             System.err.println("ERROR: " + e.getMessage() + "\n");
         }
     }
