@@ -16,7 +16,7 @@ public class ComparatorFactory {
     private static final int REVERSE_KWD_IDX = 1;
     public static final String ORDER = "ORDER";
 
-    public static Comparator<File> getComparator(List<String> orderingRules) throws TypeOneErrorException{
+    public static Comparator<File> getComparator(List<String> orderingRules, int index) {
         Comparator<File> fileComparator;
         switch (orderingRules.get(ORDER_BY_IDX)){
             case "abs":
@@ -36,7 +36,8 @@ public class ComparatorFactory {
                 break;
 
             default:
-                throw new TypeOneErrorException(ORDER);
+                System.err.println("Warning in line " + index);
+                return (f1, f2) -> f1.getName().compareTo(f2.getName());
         }
 
         return orderingRules.get(REVERSE_KWD_IDX).equals(REVERSE) ? fileComparator.reversed() : fileComparator;

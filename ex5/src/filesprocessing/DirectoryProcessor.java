@@ -38,23 +38,17 @@ public class DirectoryProcessor {
 
         int index = 0;
         while (index + 3 <= lines.size()){
-            int orderingRulesIndex = (index + ORDER_RULES_IDX) % lines.size();
+            int orderingRulesIndex = (index + ORDER_RULES_IDX) % lines.size();// TODO FIX IT!
 
             if (!lines.get(index).equals(FILTER))
                 throw new TypeTwoErrorException("FILTER sub-section missing.");
             else if (!lines.get(index + 2).equals(ORDER))
                 throw new TypeTwoErrorException("ORDER sub-section missing.");
 
-            try {
-                String filteringRules = lines.get(index + FILTER_RULES_IDX);
-                String orderingRules = lines.get(orderingRulesIndex);
-                sections.add(new CommandSection(filteringRules, orderingRules));
-            } catch (TypeOneErrorException e){
-                if (e.getMessage().equals(ORDER));
-                    //System.err.println("Warning in line " + (index + 4) + "\n");
-                else
-                    System.err.println("Warning in line " + (index + 1) + "\n");
-            }
+            String filteringRules = lines.get(index + FILTER_RULES_IDX);
+            String orderingRules = lines.get(orderingRulesIndex);
+
+            sections.add(new CommandSection(filteringRules, orderingRules, index));
 
             if (lines.get(orderingRulesIndex).equals(FILTER)){
                 index += 3;
