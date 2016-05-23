@@ -17,18 +17,14 @@ public class DirectoryProcessor {
 
     private List<CommandSection> sections;
 
-    public DirectoryProcessor(File commandFile) throws IOException {
+    public DirectoryProcessor(File commandFile) throws TypeTwoErrorException {
         if (commandFile == null || commandFile.length() == 0)
-            throw new FileNotFoundException("Invalid path or command file.");
+            throw new TypeTwoErrorException("Invalid path or command file.");
 
-        try {
-            sections = getCommandSections(commandFile);
-        } catch (IOException e){
-            System.err.println(e.getMessage());
-        }
+        sections = getCommandSections(commandFile);
     }
 
-    private List<CommandSection> getCommandSections(File commandFile) throws IOException, InvalidParameterException {
+    private List<CommandSection> getCommandSections(File commandFile) throws TypeTwoErrorException {
         List<CommandSection> sections = new ArrayList<>();
 
         List<String> lines = new ArrayList<>();
@@ -36,22 +32,31 @@ public class DirectoryProcessor {
             while (scanner.hasNext()) {
                 lines.add(scanner.next());
             }
+        } catch (IOException e){
+            System.err.println("ERROR: " + e.getMessage() + "\n");
         }
 
         int index = 0;
-        while (index + 2 <= lines.size()){
+        while (index + 3 <= lines.size()){
+            int orderingRulesIndex = (index + ORDER_RULES_IDX) % lines.size();
+
             if (!lines.get(index).equals(FILTER))
-                throw new InvalidParameterException("FILTER sub-section missing.");
+                throw new TypeTwoErrorException("FILTER sub-section missing.");
             else if (!lines.get(index + 2).equals(ORDER))
-                throw new InvalidParameterException("ORDER sub-section missing.");
+                throw new TypeTwoErrorException("ORDER sub-section missing.");
 
             try {
-                sections.add(new CommandSection(lines.get(index + FILTER_RULES_IDX), lines.get(index + ORDER_RULES_IDX)));
-            } catch (InvalidParameterException e){
-                System.err.println("Warning in line: " + (index + 1));
+                String filteringRules = lines.get(index + FILTER_RULES_IDX);
+                String orderingRules = lines.get(orderingRulesIndex);
+                sections.add(new CommandSection(filteringRules, orderingRules));
+            } catch (TypeOneErrorException e){
+                if (e.getMessage().equals(ORDER));
+                    //System.err.println("Warning in line " + (index + 4) + "\n");
+                else
+                    System.err.println("Warning in line " + (index + 1) + "\n");
             }
 
-            if (lines.get(index + ORDER_RULES_IDX).equals(FILTER)){
+            if (lines.get(orderingRulesIndex).equals(FILTER)){
                 index += 3;
                 continue;
             }
@@ -62,13 +67,18 @@ public class DirectoryProcessor {
         return sections;
     }
 
-    private void processDirectory(String path)throws InvalidPathException{
+    private void processDirectory(String path) throws TypeTwoErrorException{
         File dir = new File(path);
         if (!dir.exists() || !dir.isDirectory())
-            throw new InvalidPathException(dir.getAbsolutePath(), "Invalid path.");
+            throw new TypeTwoErrorException("Invalid path.");
+        List<File> fileList = Arrays.asList(dir.listFiles());
+        if(sections.size() == 0) {
+            fileList.forEach(file -> System.out.println(file.getName()));
+        }
 
         for (CommandSection section : sections) {
-            List<File> fileList = Arrays.stream(dir.listFiles(file -> file.isFile() && section.getFileFilter().test(file))).collect(Collectors.toList());
+            fileList = Arrays.stream(dir.listFiles()).
+                    filter(file -> file.isFile() && section.getFileFilter().test(file)).collect(Collectors.toList());
             fileList.sort(section.getFileComparator());
             fileList.forEach(file -> System.out.println(file.getName()));
         }
@@ -78,11 +88,11 @@ public class DirectoryProcessor {
     public static void main(String[] args){
         try{
             if (args.length != 2)
-                throw new IOException("Please check path of source dir and command file are correct.");
+                throw new TypeTwoErrorException("Please check that path of source dir and command file are correct.");
             DirectoryProcessor dp = new DirectoryProcessor(new File(args[COMMAND_FILE_IDX]));
             dp.processDirectory(args[SOURCE_DIR_IDX]);
-        } catch (IOException | InvalidParameterException | InvalidPathException e){
-            System.err.println("ERROR: " + e.getMessage() + "\n");
+        } catch (TypeTwoErrorException e){
+            System.err.println(e.getMessage());
         }
     }
 }

@@ -14,8 +14,9 @@ public class ComparatorFactory {
     private static final String REVERSE = "REVERSE";
     private static final String FILE_TYPE_DLM = ".";
     private static final int REVERSE_KWD_IDX = 1;
+    public static final String ORDER = "ORDER";
 
-    public static Comparator<File> getComparator(List<String> orderingRules){
+    public static Comparator<File> getComparator(List<String> orderingRules) throws TypeOneErrorException{
         Comparator<File> fileComparator;
         switch (orderingRules.get(ORDER_BY_IDX)){
             case "abs":
@@ -35,7 +36,7 @@ public class ComparatorFactory {
                 break;
 
             default:
-                throw new InvalidParameterException();
+                throw new TypeOneErrorException(ORDER);
         }
 
         return orderingRules.get(REVERSE_KWD_IDX).equals(REVERSE) ? fileComparator.reversed() : fileComparator;

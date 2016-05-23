@@ -14,7 +14,7 @@ public class FilterFactory {
     private static final int FILTER_TYPE_IDX = 0, LOWER_LIMIT_IDX = 1, UPPER_LIMIT_IDX = 2, VALUE_IDX = 1;
     public static final String NOT = "NOT", YES = "YES", NO = "NO";
 
-    public static Predicate<File> getFilter(List<String> filterRules) {
+    public static Predicate<File> getFilter(List<String> filterRules) throws TypeOneErrorException {
         Predicate<File> fileFilter;
         int lastIndex = filterRules.size() - 1;
 
@@ -28,7 +28,7 @@ public class FilterFactory {
                 double upperLimit = Double.parseDouble(filterRules.get(UPPER_LIMIT_IDX));
 
                 if (upperLimit < lowerLimit)
-                    throw new InvalidParameterException("Lower filter value should be smaller than upper value");
+                    throw new TypeOneErrorException("Lower filter value should be smaller than upper value");
 
                 Predicate<File> betweenSizeFilter =
                         file -> (file.length() / KB_CONVERSION >= lowerLimit ||
@@ -67,7 +67,7 @@ public class FilterFactory {
                 return filterRules.get(lastIndex).equals(NOT) ? file -> false : file -> true;
 
             default:
-                throw new InvalidParameterException();
+                throw new TypeOneErrorException();
         }
 
         return filterRules.get(lastIndex).equals(NOT) ? fileFilter.negate() : fileFilter;
