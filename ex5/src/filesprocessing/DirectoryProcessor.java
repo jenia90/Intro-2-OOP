@@ -37,13 +37,18 @@ public class DirectoryProcessor {
         }
 
         int index = 0;
-        while (index + 3 <= lines.size()){
-            int orderingRulesIndex = (index + ORDER_RULES_IDX) % lines.size();// TODO FIX IT!
-
+        while (index + 2 <= lines.size()){
             if (!lines.get(index).equals(FILTER))
                 throw new TypeTwoErrorException("FILTER sub-section missing.");
-            else if (!lines.get(index + 2).equals(ORDER))
+            int orderingRulesIndex =
+                    (index + ORDER_RULES_IDX) < lines.size() ? (index + ORDER_RULES_IDX) : lines.size() - 1;
+            try{ //TODO: FIX THIS PIECE OF CRAP CODE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                if(!lines.get(index + 2).equals(ORDER)){
+                    throw new TypeTwoErrorException("ORDER sub-section missing.");
+                }
+            } catch (IndexOutOfBoundsException e){
                 throw new TypeTwoErrorException("ORDER sub-section missing.");
+            }
 
             String filteringRules = lines.get(index + FILTER_RULES_IDX);
             String orderingRules = lines.get(orderingRulesIndex);
@@ -65,14 +70,14 @@ public class DirectoryProcessor {
         File dir = new File(path);
         if (!dir.exists() || !dir.isDirectory())
             throw new TypeTwoErrorException("Invalid path.");
-        List<File> fileList = Arrays.asList(dir.listFiles());
         if(sections.size() == 0) {
-            fileList.forEach(file -> System.out.println(file.getName()));
+            Arrays.asList(dir.listFiles()).forEach(file -> System.out.println(file.getName()));
         }
 
         for (CommandSection section : sections) {
-            fileList = Arrays.stream(dir.listFiles()).
-                    filter(file -> file.isFile() && section.getFileFilter().test(file)).collect(Collectors.toList());
+            section.getWarnings().forEach(System.err::println);
+            List<File> fileList = Arrays.stream(dir.listFiles()).
+                    filter(file -> section.getFileFilter().and(File::isFile).test(file)).collect(Collectors.toList());
             fileList.sort(section.getFileComparator());
             fileList.forEach(file -> System.out.println(file.getName()));
         }

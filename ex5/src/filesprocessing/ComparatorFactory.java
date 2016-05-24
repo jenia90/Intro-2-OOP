@@ -2,6 +2,8 @@ package filesprocessing;
 
 import java.io.File;
 import java.security.InvalidParameterException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -16,11 +18,11 @@ public class ComparatorFactory {
     private static final int REVERSE_KWD_IDX = 1;
     public static final String ORDER = "ORDER";
 
-    public static Comparator<File> getComparator(List<String> orderingRules, int index) {
+    public static Comparator<File> getComparator(List<String> orderingRules, int index) throws TypeOneErrorException {
         Comparator<File> fileComparator;
         switch (orderingRules.get(ORDER_BY_IDX)){
             case "abs":
-                fileComparator = (f1, f2) -> f1.getName().compareTo(f2.getName());
+                fileComparator = getNameComparator();
                 break;
             case "type":
                 fileComparator = (f1, f2) -> {
@@ -34,12 +36,19 @@ public class ComparatorFactory {
             case "size":
                 fileComparator = (f1, f2) -> Long.compare(f1.length(), f2.length());
                 break;
+            case "ORDER":
+                return getNameComparator();
 
             default:
-                System.err.println("Warning in line " + index);
-                return (f1, f2) -> f1.getName().compareTo(f2.getName());
+                throw new TypeOneErrorException(index);
         }
 
-        return orderingRules.get(REVERSE_KWD_IDX).equals(REVERSE) ? fileComparator.reversed() : fileComparator;
+        return orderingRules.get(REVERSE_KWD_IDX).equals(REVERSE) ?
+                fileComparator.thenComparing(getNameComparator()).reversed() :
+                fileComparator.thenComparing(getNameComparator());
+    }
+
+    public static Comparator<File> getNameComparator(){
+        return (f1, f2) -> f1.getAbsolutePath().compareTo(f2.getAbsolutePath());
     }
 }

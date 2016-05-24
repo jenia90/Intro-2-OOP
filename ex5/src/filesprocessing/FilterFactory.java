@@ -1,7 +1,6 @@
 package filesprocessing;
 
 import java.io.File;
-import java.security.InvalidParameterException;
 import java.util.List;
 import java.util.function.Predicate;
 
@@ -12,11 +11,10 @@ public class FilterFactory {
 
     private static final int KB_CONVERSION = 1024;
     private static final int FILTER_TYPE_IDX = 0, LOWER_LIMIT_IDX = 1, UPPER_LIMIT_IDX = 2, VALUE_IDX = 1;
-    public static final String NOT = "NOT", YES = "YES", NO = "NO";
+    private static final String NOT = "NOT", YES = "YES", NO = "NO";
 
     public static Predicate<File> getFilter(List<String> filterRules, int index) throws TypeOneErrorException {
-        Predicate<File> fileFilter;
-        int lastIndex = filterRules.size() - 1;
+        Predicate<File> fileFilter = null;
 
         switch (filterRules.get(FILTER_TYPE_IDX)){
             case "greater_than":
@@ -28,13 +26,13 @@ public class FilterFactory {
                 double upperLimit = Double.parseDouble(filterRules.get(UPPER_LIMIT_IDX));
 
                 if (upperLimit < lowerLimit)
-                    throw new TypeOneErrorException("Lower filter value should be smaller than upper value");
+                    throw new TypeOneErrorException(index);
 
                 Predicate<File> betweenSizeFilter =
                         file -> (file.length() / KB_CONVERSION >= lowerLimit ||
                                 file.length() / KB_CONVERSION <= upperLimit);
 
-                return filterRules.get(lastIndex).equals(NOT) ? betweenSizeFilter.negate() : betweenSizeFilter;
+                return filterRules.get(3).equals(NOT) ? betweenSizeFilter.negate() : betweenSizeFilter;
             case "smaller_than":
                 fileFilter =
                         file -> file.length() / KB_CONVERSION <= Double.parseDouble(filterRules.get(VALUE_IDX));
@@ -52,24 +50,49 @@ public class FilterFactory {
                 fileFilter = file -> file.getName().endsWith(filterRules.get(VALUE_IDX));
                 break;
             case "writable":
-                fileFilter = file -> filterRules.get(VALUE_IDX).equals(YES) && file.canWrite() ||
-                        filterRules.get(VALUE_IDX).equals(NO) && !file.canWrite();
+                switch (filterRules.get(VALUE_IDX)){
+                    case YES:
+                        fileFilter = File::canWrite;
+                        break;
+                    case NO:
+                        fileFilter = file -> !file.canWrite();
+                        break;
+                    default:
+                        throw new TypeOneErrorException(index);
+
+                }
                 break;
             case "executable":
-                fileFilter = file -> filterRules.get(VALUE_IDX).equals(YES) && file.canExecute() ||
-                        filterRules.get(VALUE_IDX).equals(NO) && !file.canExecute();
+                switch (filterRules.get(VALUE_IDX)){
+                    case YES:
+                        fileFilter = File::canExecute;
+                        break;
+                    case NO:
+                        fileFilter = file -> !file.canExecute();
+                        break;
+                    default:
+                        throw new TypeOneErrorException(index);
+                }
                 break;
             case "hidden":
-                fileFilter = file -> filterRules.get(VALUE_IDX).equals(YES) && file.isHidden() ||
-                        filterRules.get(VALUE_IDX).equals(NO) && !file.isHidden();
+                switch (filterRules.get(VALUE_IDX)){
+                    case YES:
+                        fileFilter = File::isHidden;
+                        break;
+                    case NO:
+                        fileFilter = file -> !file.isHidden();
+                        break;
+                    default:
+                        throw new TypeOneErrorException(index);
+                }
                 break;
             case "all":
-                return filterRules.get(lastIndex).equals(NOT) ? file -> false : file -> true;
+                return filterRules.get(1).equals(NOT) ? file -> false : file -> true;
 
             default:
-                throw new TypeOneErrorException("Warning in line " + index);
+                throw new TypeOneErrorException(index);
         }
 
-        return filterRules.get(lastIndex).equals(NOT) ? fileFilter.negate() : fileFilter;
+        return filterRules.get(2).equals(NOT) ? fileFilter.negate() : fileFilter;
     }
 }

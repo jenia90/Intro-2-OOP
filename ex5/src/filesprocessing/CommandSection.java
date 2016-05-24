@@ -14,9 +14,11 @@ public class CommandSection {
 
     private Predicate<File> fileFilter;
     private Comparator<File> fileComparator;
+    private List<String> warnings;
 
     public CommandSection(String filteringRules, String orderingRules, int index)
             throws TypeTwoErrorException {
+
         if (filteringRules.isEmpty())
             throw new TypeTwoErrorException("FILTER sub-section missing.");
         List<String> filterRules = new ArrayList<>(Arrays.asList(filteringRules.split(HASHTAG)));
@@ -24,15 +26,26 @@ public class CommandSection {
         List<String> orderRules = new ArrayList<>(Arrays.asList(orderingRules.split(HASHTAG)));
         orderRules.add("");
 
+        this.warnings = new ArrayList<>();
+
         try {
             this.fileFilter = FilterFactory.getFilter(filterRules, index + 2);
         } catch (TypeOneErrorException e) {
             this.fileFilter = file -> true;
-            throw new TypeTwoErrorException("FILTER");
+            warnings.add(e.getMessage());
         }
 
-        this.fileComparator = ComparatorFactory.getComparator(orderRules, index + 4);
+        try {
+            this.fileComparator = ComparatorFactory.getComparator(orderRules, index + 4);
+        } catch (TypeOneErrorException e){
+            warnings.add(e.getMessage());
+            this.fileComparator = ComparatorFactory.getNameComparator();
+        }
 
+    }
+
+    public List<String> getWarnings() {
+        return warnings;
     }
 
     public Predicate<File> getFileFilter(){
