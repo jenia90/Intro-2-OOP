@@ -35,8 +35,8 @@ public class CommandSection {
         warnings = new ArrayList<>();
 
         /**
-         * These next 2 try-catch blocks are intended to handle all Type I errors and adding them
-         * to the warnings collection to be printed before each section processed files.
+         * These next 2 try-catch blocks are intended to handle all Type I errors and adding their
+         * messages to the warnings collection to be printed before each section processed files.
          */
         try {
             fileFilter = FilterFactory.getFilter(filterRules, index + FILTER_RULE_LINE); //TODO ?
@@ -54,14 +54,26 @@ public class CommandSection {
 
     }
 
+    /**
+     * Gets a list of warnings in this section.
+     * @return list of warnings.
+     */
     public List<String> getWarnings() {
         return warnings;
     }
 
+    /**
+     * Gets the filefilter Predicate object in this section
+     * @return filefilter Predicate
+     */
     public Predicate<File> getFileFilter(){
         return fileFilter;
     }
 
+    /**
+     * Gets the file Comparator object in this section.
+     * @return file Comparator.
+     */
     public Comparator<File> getFileComparator(){
         return fileComparator;
     }

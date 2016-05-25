@@ -51,6 +51,8 @@ public class ComparatorFactory {
                 throw new TypeOneErrorException(index);
         }
 
+        // Here we return the chosen Comparator with the only exception - when two file are of the same type or size
+        // we also compare their names. Also we check if the sorting needs to be reversed.
         return orderingRules.get(REVERSE_KWD_IDX).equals(REVERSE) ?
                 fileComparator.thenComparing(getDefaultComparator()).reversed() :
                 fileComparator.thenComparing(getDefaultComparator());

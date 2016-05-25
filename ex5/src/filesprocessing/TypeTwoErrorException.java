@@ -1,10 +1,17 @@
 package filesprocessing;
 
 /**
- * Created by jenia on 24/05/2016.
+ * Represents Type II Error exception.
  */
 public class TypeTwoErrorException extends Exception {
+
+    private static final String ERROR_STRING = "ERROR: %s\n";
+
+    /**
+     * Constructor to create a custom message for this type of error.
+     * @param message the error message to be added.
+     */
     public TypeTwoErrorException(String message){
-        super("ERROR: " + message + "\n");
+        super(String.format(ERROR_STRING, message));
     }
 }
