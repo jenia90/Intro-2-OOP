@@ -14,6 +14,9 @@ public class DirectoryProcessor {
     private static final int SOURCE_DIR_IDX = 0, COMMAND_FILE_IDX = 1;
     private static final String FILTER = "FILTER", ORDER = "ORDER";
     private static final int FILTER_RULES_IDX = 1, ORDER_RULES_IDX = 3;
+    private static final String ORDER_MISSING = "ORDER sub-section missing.",
+            FILTER_MISSING = "FILTER sub-section missing.";
+    private static final String DEFAULT_ORDER = "abs";
 
     private List<CommandSection> sections;
 
@@ -39,19 +42,18 @@ public class DirectoryProcessor {
         int index = 0;
         while (index + 2 <= lines.size()){
             if (!lines.get(index).equals(FILTER))
-                throw new TypeTwoErrorException("FILTER sub-section missing.");
+                throw new TypeTwoErrorException(FILTER_MISSING);
             int orderingRulesIndex =
                     (index + ORDER_RULES_IDX) < lines.size() ? (index + ORDER_RULES_IDX) : lines.size() - 1;
-            try{ //TODO: FIX THIS PIECE OF CRAP CODE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-                if(!lines.get(index + 2).equals(ORDER)){
-                    throw new TypeTwoErrorException("ORDER sub-section missing.");
-                }
-            } catch (IndexOutOfBoundsException e){
-                throw new TypeTwoErrorException("ORDER sub-section missing.");
+
+            if(index + 2 >= lines.size() || !lines.get(index + 2).equals(ORDER)){
+                throw new TypeTwoErrorException(ORDER_MISSING);
             }
 
             String filteringRules = lines.get(index + FILTER_RULES_IDX);
-            String orderingRules = lines.get(orderingRulesIndex);
+            String orderingRules = lines.get(orderingRulesIndex).equals(FILTER) ||
+                    lines.get(orderingRulesIndex).equals(FILTER) ?
+                    DEFAULT_ORDER : lines.get(orderingRulesIndex);
 
             sections.add(new CommandSection(filteringRules, orderingRules, index));
 
@@ -76,8 +78,7 @@ public class DirectoryProcessor {
 
         for (CommandSection section : sections) {
             section.getWarnings().forEach(System.err::println);
-            List<File> fileList = Arrays.stream(dir.listFiles()).
-                    filter(file -> section.getFileFilter().and(File::isFile).test(file)).collect(Collectors.toList());
+            List<File> fileList = Arrays.asList(dir.listFiles(file -> section.getFileFilter().and(File::isFile).test(file)));
             fileList.sort(section.getFileComparator());
             fileList.forEach(file -> System.out.println(file.getName()));
         }
@@ -87,7 +88,7 @@ public class DirectoryProcessor {
     public static void main(String[] args){
         try{
             if (args.length != 2)
-                throw new TypeTwoErrorException("Please check that path of source dir and command file are correct.");
+                throw new TypeTwoErrorException("Usage: javac DirectoryProcessor.java <source_dir> <command_file>");
             DirectoryProcessor dp = new DirectoryProcessor(new File(args[COMMAND_FILE_IDX]));
             dp.processDirectory(args[SOURCE_DIR_IDX]);
         } catch (TypeTwoErrorException e){

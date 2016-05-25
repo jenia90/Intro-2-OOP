@@ -19,7 +19,7 @@ public class FilterFactory {
         switch (filterRules.get(FILTER_TYPE_IDX)){
             case "greater_than":
                 fileFilter =
-                        file -> file.length() / KB_CONVERSION >= Double.parseDouble(filterRules.get(VALUE_IDX));
+                        file -> file.length() / KB_CONVERSION > Double.parseDouble(filterRules.get(VALUE_IDX));
                 break;
             case "between":
                 double lowerLimit = Double.parseDouble(filterRules.get(LOWER_LIMIT_IDX));
@@ -29,13 +29,13 @@ public class FilterFactory {
                     throw new TypeOneErrorException(index);
 
                 Predicate<File> betweenSizeFilter =
-                        file -> (file.length() / KB_CONVERSION >= lowerLimit ||
+                        file -> (file.length() / KB_CONVERSION >= lowerLimit &&
                                 file.length() / KB_CONVERSION <= upperLimit);
 
                 return filterRules.get(3).equals(NOT) ? betweenSizeFilter.negate() : betweenSizeFilter;
             case "smaller_than":
                 fileFilter =
-                        file -> file.length() / KB_CONVERSION <= Double.parseDouble(filterRules.get(VALUE_IDX));
+                        file -> file.length() / KB_CONVERSION < Double.parseDouble(filterRules.get(VALUE_IDX));
                 break;
             case "file":
                 fileFilter = file -> file.getName().equals(filterRules.get(VALUE_IDX));
