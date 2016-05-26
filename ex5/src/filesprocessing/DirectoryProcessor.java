@@ -58,6 +58,7 @@ public class DirectoryProcessor {
          */
         int line = 0;
         while (line + MINIMUM_SECTION_STEP <= lines.size()){
+            // Checks if FILTER sub-section is missing.
             if (!lines.get(line).equals(FILTER))
                 throw new TypeTwoErrorException(FILTER_MISSING);
             // Checks if order sub-section is missing

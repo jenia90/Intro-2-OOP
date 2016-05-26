@@ -12,8 +12,7 @@ public class ComparatorFactory {
     /**
      * Constants.
      */
-    private static final int ORDER_BY_IDX = 0, REVERSE_KWD_IDX = 1;
-    private static final String REVERSE = "REVERSE", ORDER_KWD = "ORDER";
+    private static final int ORDER_BY_IDX = 0;
     private static final String FILE_TYPE_DLM = ".";
     private static final String ABS = "abs", TYPE = "type", SIZE = "size";
 
@@ -21,11 +20,12 @@ public class ComparatorFactory {
      * Creates a comparator object based on ordering rules passed to it.
      * In case wrong parameters passed, an exception about the corresponding line would be thrown.
      * @param orderingRules Ordering command
-     * @param index line index in the command line.
-     * @return Returns a Comparator<> object.
-     * @throws TypeOneErrorException
+     * @param reverse true if comparator should be reversed; false otherwise.
+     *@param index line index in the command line.  @return Returns a Comparator<> object.
+     * @throws TypeOneErrorException if wront parameters\rules were passed.
      */
-    public static Comparator<File> getComparator(List<String> orderingRules, int index) throws TypeOneErrorException {
+    public static Comparator<File> getComparator(List<String> orderingRules, boolean reverse, int index)
+            throws TypeOneErrorException {
         Comparator<File> fileComparator;
 
         switch (orderingRules.get(ORDER_BY_IDX)){
@@ -44,8 +44,6 @@ public class ComparatorFactory {
             case SIZE:
                 fileComparator = (f1, f2) -> Long.compare(f1.length(), f2.length());
                 break;
-            case ORDER_KWD:
-                return getDefaultComparator();
 
             default:
                 throw new TypeOneErrorException(index);
@@ -53,8 +51,7 @@ public class ComparatorFactory {
 
         // Here we return the chosen Comparator with the only exception - when two file are of the same type or size
         // we also compare their names. Also we check if the sorting needs to be reversed.
-        return orderingRules.get(REVERSE_KWD_IDX).equals(REVERSE) ?
-                fileComparator.thenComparing(getDefaultComparator()).reversed() :
+        return reverse ? fileComparator.thenComparing(getDefaultComparator()).reversed() :
                 fileComparator.thenComparing(getDefaultComparator());
     }
 

@@ -9,9 +9,17 @@ import java.util.function.*;
  */
 public class CommandSection {
 
+    /**
+     * Constants.
+     */
     private static final String HASHTAG = "#";
-    public static final int FILTER_RULE_LINE = 2;
+    private static final int FILTER_RULE_LINE = 2, ORDER_RULE_LINE = 4;
+    private static final String NOT = "NOT",  REVERSE = "REVERSE";
+    public static final String ORDER = "ORDER";
 
+    /**
+     * Member fields.
+     */
     private Predicate<File> fileFilter;
     private Comparator<File> fileComparator;
     private List<String> warnings;
@@ -27,30 +35,36 @@ public class CommandSection {
             throws TypeTwoErrorException {
         // Here we split the rules string into a list of parameters and add empty string to eliminate
         // IndexOutOfBoundsException in case there's no REVERS\NOT keyword.
-        List<String> filterRules = new ArrayList<>(Arrays.asList(filteringRules.split(HASHTAG)));
-        filterRules.add("");
-        List<String> orderRules = new ArrayList<>(Arrays.asList(orderingRules.split(HASHTAG)));
-        orderRules.add("");
 
         warnings = new ArrayList<>();
+        boolean negate = filteringRules.endsWith(NOT);
+        boolean reverse = orderingRules.endsWith(REVERSE);
+        List<String> filterRules = new ArrayList<>(Arrays.asList(filteringRules.split(HASHTAG)));
 
         /**
-         * These next 2 try-catch blocks are intended to handle all Type I errors and adding their
-         * messages to the warnings collection to be printed before each section processed files.
+         * This try-catch block of code initializes the file filter for the current section.
          */
         try {
-            fileFilter = FilterFactory.getFilter(filterRules, index + FILTER_RULE_LINE); //TODO ?
+            fileFilter = FilterFactory.getFilter(filterRules, negate, index + FILTER_RULE_LINE);
         } catch (TypeOneErrorException e) {
-            fileFilter = file -> true;
             warnings.add(e.getMessage());
+            fileFilter = file -> true;
         }
 
-        try {
-            this.fileComparator = ComparatorFactory.getComparator(orderRules, index + 4);
-        } catch (TypeOneErrorException e){
-            warnings.add(e.getMessage());
-            this.fileComparator = ComparatorFactory.getDefaultComparator();
-        }
+        /**
+         * This block of code initializes the file comparator for the current section.
+         */
+        if (!orderingRules.equals(ORDER)){
+            List<String> orderRules = new ArrayList<>(Arrays.asList(orderingRules.split(HASHTAG)));
+
+            try {
+                fileComparator = ComparatorFactory.getComparator(orderRules,reverse, index + ORDER_RULE_LINE);
+            } catch (TypeOneErrorException e){
+                warnings.add(e.getMessage());
+                fileComparator = ComparatorFactory.getDefaultComparator();
+            }
+        } else fileComparator = ComparatorFactory.getDefaultComparator();
+
 
     }
 
