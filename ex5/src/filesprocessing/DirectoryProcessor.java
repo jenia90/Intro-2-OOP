@@ -68,7 +68,7 @@ public class DirectoryProcessor {
 
             // clamps the line indexes inside the List<> bounds.
             int orderingRulesIndex =
-                    (line + ORDER_RULES_IDX) < lines.size() ? (line + ORDER_RULES_IDX) : lines.size() - 1;
+                    (line + ORDER_RULES_IDX) < lines.size() ? (line + ORDER_RULES_IDX) : (lines.size()-1);
 
             // checks if next line after the ORDER keyword is FILTER keyword.
             boolean noOrderRules = lines.get(orderingRulesIndex).equals(FILTER);
@@ -93,7 +93,7 @@ public class DirectoryProcessor {
      * @throws TypeTwoErrorException if the path is incorrect.
      */
     private void processDirectory(File dir) throws TypeTwoErrorException{
-        // checs if directory exists and it is in fact, a directory.
+        // checks if directory exists and it is in fact, a directory.
         if (!dir.exists() || !dir.isDirectory())
             throw new TypeTwoErrorException("Invalid path.");
 

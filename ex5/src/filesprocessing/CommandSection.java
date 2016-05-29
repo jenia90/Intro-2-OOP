@@ -15,57 +15,69 @@ public class CommandSection {
     private static final String HASHTAG = "#";
     private static final int FILTER_RULE_LINE = 2, ORDER_RULE_LINE = 4;
     private static final String NOT = "NOT",  REVERSE = "REVERSE";
-    public static final String ORDER = "ORDER";
+    private static final String ORDER = "ORDER";
 
     /**
      * Member fields.
      */
-    private Predicate<File> fileFilter;
-    private Comparator<File> fileComparator;
+    private final Predicate<File> fileFilter;
+    private final Comparator<File> fileComparator;
     private List<String> warnings;
 
     /**
      * Constructor.
      * @param filteringRules File filtering rules string.
      * @param orderingRules File ordering rules string.
-     * @param index Line in which this section begins in the commandFile.
+     * @param line Line in which this section begins in the commandFile.
      * @throws TypeTwoErrorException
      */
-    public CommandSection(String filteringRules, String orderingRules, int index)
+    public CommandSection(String filteringRules, String orderingRules, int line)
             throws TypeTwoErrorException {
-        // Here we split the rules string into a list of parameters and add empty string to eliminate
-        // IndexOutOfBoundsException in case there's no REVERS\NOT keyword.
-
         warnings = new ArrayList<>();
         boolean negate = filteringRules.endsWith(NOT);
         boolean reverse = orderingRules.endsWith(REVERSE);
+
+        fileFilter = generateFilter(filteringRules, negate, line);
+        fileComparator = generateComparator(orderingRules, reverse, line);
+    }
+
+    /**
+     * Returns a Comparator for sorting list of files.
+     * @param orderingRules rules for the Comparator creation.
+     * @param reverse should the Comparator be negated.
+     * @param line line index in the command file for the case when an exception is thrown.
+     */
+    private Comparator<File> generateComparator(String orderingRules, boolean reverse, int line) {
+        // This block of code initializes the file comparator for the current section.
+        if (orderingRules.equals(ORDER))
+            return ComparatorFactory.getDefaultComparator();
+
+        List<String> orderRules = new ArrayList<>(Arrays.asList(orderingRules.split(HASHTAG)));
+
+        try {
+            return ComparatorFactory.getComparator(orderRules,reverse, line + ORDER_RULE_LINE);
+        } catch (TypeOneErrorException e){
+            warnings.add(e.getMessage());
+            return ComparatorFactory.getDefaultComparator();
+        }
+    }
+
+    /**
+     * Returns a predicate for filtering list of files.
+     * @param filteringRules rules for the Predicate creation.
+     * @param negate should the Predicate be negated.
+     * @param line line index in the command file for the case when an exception is thrown.
+     */
+    private Predicate<File> generateFilter(String filteringRules, boolean negate, int line) {
         List<String> filterRules = new ArrayList<>(Arrays.asList(filteringRules.split(HASHTAG)));
 
-        /**
-         * This try-catch block of code initializes the file filter for the current section.
-         */
+        // This try-catch block of code initializes the file filter for the current section.
         try {
-            fileFilter = FilterFactory.getFilter(filterRules, negate, index + FILTER_RULE_LINE);
+            return FilterFactory.getFilter(filterRules, negate, line + FILTER_RULE_LINE);
         } catch (TypeOneErrorException e) {
             warnings.add(e.getMessage());
-            fileFilter = file -> true;
+            return file -> true;
         }
-
-        /**
-         * This block of code initializes the file comparator for the current section.
-         */
-        if (!orderingRules.equals(ORDER)){
-            List<String> orderRules = new ArrayList<>(Arrays.asList(orderingRules.split(HASHTAG)));
-
-            try {
-                fileComparator = ComparatorFactory.getComparator(orderRules,reverse, index + ORDER_RULE_LINE);
-            } catch (TypeOneErrorException e){
-                warnings.add(e.getMessage());
-                fileComparator = ComparatorFactory.getDefaultComparator();
-            }
-        } else fileComparator = ComparatorFactory.getDefaultComparator();
-
-
     }
 
     /**

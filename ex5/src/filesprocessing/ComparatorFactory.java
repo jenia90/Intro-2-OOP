@@ -22,7 +22,7 @@ public class ComparatorFactory {
      * @param orderingRules Ordering command
      * @param reverse true if comparator should be reversed; false otherwise.
      *@param index line index in the command line.  @return Returns a Comparator<> object.
-     * @throws TypeOneErrorException if wront parameters\rules were passed.
+     * @throws TypeOneErrorException if wrong parameters\rules were passed.
      */
     public static Comparator<File> getComparator(List<String> orderingRules, boolean reverse, int index)
             throws TypeOneErrorException {

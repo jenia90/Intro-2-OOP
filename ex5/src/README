@@ -7,21 +7,78 @@ jenia90
 =      File description     =
 =============================
 
+CommandSection.java - contains implementation of class which is defined by each
+                      section in the command file.
 
+ComparatorFactory.java - contains implementation of a class with a static method that
+                         based on the passed to it rules returns a Comparator object.
+
+DirectoryProcessor.java - contains implementation of the DirectoryProcessor class which
+                          based on the passed to it command line arguments of a command
+                          file and a directory, returns a processed list of files from
+                          that directory.
+
+FilterFactory.java - contains implementation of a class with a static method that based
+                     on passed to it rules returns a Predicate object for filtering files.
+
+TypeOneErrorException.java - contains implementation of a class that extends the Exception
+                             class and creates a custom message that would be printed
+                             when that exception is thrown.
+
+TypeTwoErrorException.java - same as TypeOneErrorException.
+
+README - this file.
 
 =============================
 =          Design           =
 =============================
 
+The design I had in mind is that the DirectoryProcessor class at init time would scan
+the command file line by line and create CommandSection objects for each of the sections.
+That way it would handle all the Type II errors at init and will not wait until the
+directory processing itself.
 
+Then a processDirectory method would be called with the source directory as its parameter
+and it would process the directory using the sections created at init.
+
+This would allow us for example to process multiple directories with the same command file
+without the need to rescan the command file or re-initialize the DirectoryProcessor
+for each directory.
 
 =============================
 =  Implementation details   =
 =============================
 
+As I mentioned in the design section, in my implementation i create a list of
+CommandSection objects for each valid section in the command file.
 
+The CommmandSection in its constructor splits the strings containing the filtering and
+ordering rules into arrays and then calls the special factory methods in the FilterFactory
+and ComparatorFactory classes. These methods return a Predicate for filter and Comparator
+for the sorting.
 
+In case there are wrong parameters passed to the factory classes they would throw a Type I
+error exception passing the line number to the Exception class constructor so when printed
+it would print "Warning in line X". This exception would be caught in the CommandSection
+constructor and added to the list of warning  for this section.
 
-=============================
-=    Answers to questions   =
-=============================
+So, now we have a sections which contain filters and sorters for the files. Next step is
+to call the processDirectory method with the source directory passed to it as a File object.
+This method first of all checks if the passed to it directory is indeed a directory.
+
+In case the list of sections is empty we just print all the files in the directory.
+
+If all goes well and we have sections and valid directory to work with, we iterate
+through the list of sections we created earlier and do the following:
+1. We print all the warning in the current section
+2. We create a filtered list of files using the File.listFiles() which receives a
+   predicate as a parameter (which our section has).
+3. Using the sort() method of the List<> class we sort the files using the Comparator
+   object we have in our section (which we pass as a parameter to the sort method).
+4. At last we print all the files in the filter and sorted list to the System.out.
+
+P.S.: At first I thought about implementing each filter\comparator type in separate classes
+      but it became very long and annoying process of implementation and I decided to
+      go with lambda expression which shortened my implementation a lot!
+
+      LAMBDAS FTW!
